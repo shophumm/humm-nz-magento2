@@ -29,7 +29,7 @@ class Image extends \Magento\Config\Block\System\Config\Form\Field
         if (!(string)$element->getValue()) {
             $defaultImage = $this->getViewFileUrl('Humm_HummPaymentGateway::images/humm_logo.png');
             
-            $html .= '<img src="' . $defaultImage . '" alt="Humm logo" height="50" width="85" class="small-image-preview v-middle" />';
+            $html .= '<img src="' . $defaultImage . '" alt="Humm logo" height="30" class="small-image-preview v-middle" />';
             $html .= '<p class="note"><span>Upload a new image if you wish to replace this logo.</span></p>';
         }
 
