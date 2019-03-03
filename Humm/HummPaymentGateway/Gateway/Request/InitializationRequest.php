@@ -41,26 +41,6 @@ class InitializationRequest implements BuilderInterface {
      * @return bool;
      */
     private function validateQuote( OrderAdapter $order ) {
-        $total = $order->getGrandTotalAmount();
-        if ( $total < 20 ) {
-            $this->_session->setHummErrorMessage( __( "Humm doesn't support purchases less than $20." ) );
-
-            return false;
-        }
-
-        if ( $this->_gatewayConfig->isAus() ) {
-            if ( $total > 2100 ) {
-                $this->_session->setHummErrorMessage( __( "Humm doesn't support purchases over $2100." ) );
-
-                return false;
-            }
-        } else {
-            if ( $total > 1500 ) {
-                $this->_session->setHummErrorMessage( __( "Humm doesn't support purchases over $1500." ) );
-
-                return false;
-            }
-        }
 
         $this->_logger->debug( '[InitializationRequest][validateQuote]$this->_gatewayConfig->getSpecificCountry():' . ( $this->_gatewayConfig->getSpecificCountry() ) );
         $allowedCountriesArray = explode( ',', $this->_gatewayConfig->getSpecificCountry() );
