@@ -6,8 +6,8 @@
 
 namespace Humm\HummPaymentGateway\Helper;
 
-use Magento\Sales\Model\Order;
 use Magento\Checkout\Model\Session;
+use Magento\Sales\Model\Order;
 
 /**
  * Checkout workflow helper
@@ -15,8 +15,7 @@ use Magento\Checkout\Model\Session;
  * Class Checkout
  * @package Humm\HummPaymentGateway\Helper
  */
-class Checkout
-{
+class Checkout {
     /**
      * @var \Magento\Checkout\Model\Session
      */
@@ -30,20 +29,23 @@ class Checkout
     ) {
         $this->session = $session;
     }
+
     /**
      * Cancel last placed order with specified comment message
      *
      * @param string $comment Comment appended to order history
+     *
      * @throws \Magento\Framework\Exception\LocalizedException
      * @return bool True if order cancelled, false otherwise
      */
-    public function cancelCurrentOrder($comment)
-    {
+    public function cancelCurrentOrder( $comment ) {
         $order = $this->session->getLastRealOrder();
-        if ($order->getId() && $order->getState() != Order::STATE_CANCELED) {
-            $order->registerCancellation($comment)->save();
+        if ( $order->getId() && $order->getState() != Order::STATE_CANCELED ) {
+            $order->registerCancellation( $comment )->save();
+
             return true;
         }
+
         return false;
     }
 
@@ -52,8 +54,7 @@ class Checkout
      *
      * @return bool
      */
-    public function restoreQuote()
-    {
+    public function restoreQuote() {
         return $this->session->restoreQuote();
     }
 }

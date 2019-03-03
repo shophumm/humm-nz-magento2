@@ -12,36 +12,41 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Quote\Setup\QuoteSetupFactory;
 use Magento\Sales\Setup\SalesSetupFactory;
 
-class InstallData implements InstallDataInterface
-{
+class InstallData implements InstallDataInterface {
     /**
      * {@inheritdoc}
      */
-    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
-    {
+    public function install( ModuleDataSetupInterface $setup, ModuleContextInterface $context ) {
         /**
          * Prepare database for install
          */
         $setup->startSetup();
 
         // add default Humm Status "Humm Processed" for STATE_PROCESSING state
-        $statusTable = 'sales_order_status';
-        $statusStateTable = 'sales_order_status_state';
+        $statusTable          = 'sales_order_status';
+        $statusStateTable     = 'sales_order_status_state';
         $hummProcessingStatus = 'humm_processed';
-        $processingState  = \Magento\Sales\Model\Order::STATE_PROCESSING;
+        $processingState      = \Magento\Sales\Model\Order::STATE_PROCESSING;
 
         //Insert 'humm_processed' status
         $setup->getConnection()->insertArray(
             $statusTable,
-            array('status', 'label'),
-            array(array('status' => $hummProcessingStatus, 'label' => 'Humm Processed'))
+            array( 'status', 'label' ),
+            array( array( 'status' => $hummProcessingStatus, 'label' => 'Humm Processed' ) )
         );
 
         //Associate 'humm_processed' status with STATE_PROCESSING state
         $setup->getConnection()->insertArray(
             $statusStateTable,
-            array('status', 'state', 'is_default', 'visible_on_front'),
-            array(array('status' => $hummProcessingStatus, 'state' => $processingState, 'is_default' => 0, 'visible_on_front' => 1))
+            array( 'status', 'state', 'is_default', 'visible_on_front' ),
+            array(
+                array(
+                    'status'           => $hummProcessingStatus,
+                    'state'            => $processingState,
+                    'is_default'       => 0,
+                    'visible_on_front' => 1
+                )
+            )
         );
 
         /**

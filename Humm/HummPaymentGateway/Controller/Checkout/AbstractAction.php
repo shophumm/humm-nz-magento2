@@ -2,14 +2,14 @@
 
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Checkout\Model\Session;
-use Magento\Framework\App\Action\Context;
-use Magento\Sales\Model\OrderFactory;
+use Humm\HummPaymentGateway\Gateway\Config\Config;
+use Humm\HummPaymentGateway\Helper\Checkout;
 use Humm\HummPaymentGateway\Helper\Crypto;
 use Humm\HummPaymentGateway\Helper\Data;
-use Humm\HummPaymentGateway\Helper\Checkout;
-use Humm\HummPaymentGateway\Gateway\Config\Config;
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Sales\Model\OrderFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -47,18 +47,19 @@ abstract class AbstractAction extends Action {
         Crypto $cryptoHelper,
         Data $dataHelper,
         Checkout $checkoutHelper,
-        LoggerInterface $logger) {
-        parent::__construct($context);
+        LoggerInterface $logger
+    ) {
+        parent::__construct( $context );
         $this->_checkoutSession = $checkoutSession;
-        $this->_orderFactory = $orderFactory;
-        $this->_cryptoHelper = $cryptoHelper;
-        $this->_dataHelper = $dataHelper;
-        $this->_checkoutHelper = $checkoutHelper;
-        $this->_gatewayConfig = $gatewayConfig;
-        $this->_messageManager = $context->getMessageManager();
-        $this->_logger = $logger;
+        $this->_orderFactory    = $orderFactory;
+        $this->_cryptoHelper    = $cryptoHelper;
+        $this->_dataHelper      = $dataHelper;
+        $this->_checkoutHelper  = $checkoutHelper;
+        $this->_gatewayConfig   = $gatewayConfig;
+        $this->_messageManager  = $context->getMessageManager();
+        $this->_logger          = $logger;
     }
-    
+
     protected function getContext() {
         return $this->_context;
     }
@@ -94,31 +95,28 @@ abstract class AbstractAction extends Action {
     protected function getLogger() {
         return $this->_logger;
     }
-    
-    protected function getOrder()
-    {
+
+    protected function getOrder() {
         $orderId = $this->_checkoutSession->getLastRealOrderId();
 
-        if (!isset($orderId)) {
+        if ( ! isset( $orderId ) ) {
             return null;
         }
 
-        return $this->getOrderById($orderId);
+        return $this->getOrderById( $orderId );
     }
 
-    protected function getOrderById($orderId)
-    {
-        $order = $this->_orderFactory->create()->loadByIncrementId($orderId);
+    protected function getOrderById( $orderId ) {
+        $order = $this->_orderFactory->create()->loadByIncrementId( $orderId );
 
-        if (!$order->getId()) {
+        if ( ! $order->getId() ) {
             return null;
         }
 
         return $order;
     }
 
-    protected function getObjectManager()
-    {
+    protected function getObjectManager() {
         return \Magento\Framework\App\ObjectManager::getInstance();
     }
 

@@ -16,7 +16,7 @@
                 <is_gateway>1</is_gateway>
                 <!--<order_status>processing</order_status>--> <!--We set the order status in InitializationRequest-->
                 <description>Pay the easier way</description>
-                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <gateway_url>https://securesandbox.shophumm.com.au/Checkout?platform=default</gateway_url>
                 <specificcountry>AU,NZ</specificcountry>
                 <can_initialize>1</can_initialize> <!--Important: read Magento\Sales\Model\Order-->

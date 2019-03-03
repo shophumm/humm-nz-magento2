@@ -3,6 +3,7 @@
  * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Humm\HummPaymentGateway\Gateway\Config;
 
 /**
@@ -10,8 +11,7 @@ namespace Humm\HummPaymentGateway\Gateway\Config;
  * Values returned from Magento\Payment\Gateway\Config\Config.getValue()
  * are taken by default from ScopeInterface::SCOPE_STORE
  */
-class Config extends \Magento\Payment\Gateway\Config\Config
-{
+class Config extends \Magento\Payment\Gateway\Config\Config {
     const CODE = 'humm_gateway';
 
     const KEY_ACTIVE = 'active';
@@ -33,7 +33,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      * @return string
      */
     public function getMerchantNumber() {
-        return $this->getValue(self::KEY_MERCHANT_NUMBER);
+        return $this->getValue( self::KEY_MERCHANT_NUMBER );
     }
 
     /**
@@ -42,7 +42,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      * @return string
      */
     public function getTitle() {
-        return $this->getValue(self::KEY_TITLE);
+        return $this->getValue( self::KEY_TITLE );
     }
 
     /**
@@ -51,7 +51,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      * @return string
      */
     public function getLogo() {
-        return $this->getValue(self::KEY_GATEWAY_LOGO);
+        return $this->getValue( self::KEY_GATEWAY_LOGO );
     }
 
     /**
@@ -60,17 +60,17 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      * @return string
      */
     public function getDescription() {
-        return $this->getValue(self::KEY_DESCRIPTION);
+        return $this->getValue( self::KEY_DESCRIPTION );
     }
 
     /**
      * Is store in Australia
      * @return bool
      */
-    public function isAus()
-    {
+    public function isAus() {
         $checkoutUrl = $this->getGatewayUrl();
-        return strpos($checkoutUrl, ".co.nz") ? false : true;
+
+        return strpos( $checkoutUrl, ".co.nz" ) ? false : true;
     }
 
     /**
@@ -79,37 +79,36 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      * @return string
      */
     public function getGatewayUrl() {
-        return $this->getValue(self::KEY_GATEWAY_URL);
+        return $this->getValue( self::KEY_GATEWAY_URL );
     }
 
-	/**
-	 * get the Humm refund gateway Url
-	 * @return string
-	 */
-	public function getRefundUrl() {
+    /**
+     * get the Humm refund gateway Url
+     * @return string
+     */
+    public function getRefundUrl() {
         $checkoutUrl = $this->isAus() ? '.com.au' : '.co.nz';
 
-		if (strpos($checkoutUrl, 'sandbox') === false) {
-			$isSandbox = false;
-		} else {
-			$isSandbox = true; //default value
-		}
+        if ( strpos( $checkoutUrl, 'sandbox' ) === false ) {
+            $isSandbox = false;
+        } else {
+            $isSandbox = true; //default value
+        }
 
-		if (!$isSandbox){
-			return 'https://portals.humm'.$checkoutUrl.'/api/ExternalRefund/processrefund';
-		} else {
-			return 'https://portalssandbox.humm'.$checkoutUrl.'/api/ExternalRefund/processrefund';
-		}
-	}
+        if ( ! $isSandbox ) {
+            return 'https://portals.humm' . $checkoutUrl . '/api/ExternalRefund/processrefund';
+        } else {
+            return 'https://portalssandbox.humm' . $checkoutUrl . '/api/ExternalRefund/processrefund';
+        }
+    }
 
     /**
      * Get API Key
      *
      * @return string
      */
-    public function getApiKey()
-    {
-        return $this->getValue(self::KEY_API_KEY);
+    public function getApiKey() {
+        return $this->getValue( self::KEY_API_KEY );
     }
 
     /**
@@ -117,36 +116,32 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      *
      * @return string
      */
-    public function getHummApprovedOrderStatus()
-    {
-        return $this->getValue(self::KEY_HUMM_APPROVED_ORDER_STATUS);
+    public function getHummApprovedOrderStatus() {
+        return $this->getValue( self::KEY_HUMM_APPROVED_ORDER_STATUS );
     }
 
     /**
      * Check if customer is to be notified
      * @return boolean
      */
-    public function isEmailCustomer()
-    {
-        return (bool) $this->getValue(self::KEY_EMAIL_CUSTOMER);
+    public function isEmailCustomer() {
+        return (bool) $this->getValue( self::KEY_EMAIL_CUSTOMER );
     }
 
     /**
      * Check if customer is to be notified
      * @return boolean
      */
-    public function isAutomaticInvoice()
-    {
-        return (bool) $this->getValue(self::KEY_AUTOMATIC_INVOICE);
+    public function isAutomaticInvoice() {
+        return (bool) $this->getValue( self::KEY_AUTOMATIC_INVOICE );
     }
 
     /**
      * Get Payment configuration status
      * @return bool
      */
-    public function isActive()
-    {
-        return (bool) $this->getValue(self::KEY_ACTIVE);
+    public function isActive() {
+        return (bool) $this->getValue( self::KEY_ACTIVE );
     }
 
     /**
@@ -154,9 +149,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      *
      * @return string
      */
-    public function getSpecificCountry()
-    {
-        return $this->getValue(self::KEY_SPECIFIC_COUNTRY);
+    public function getSpecificCountry() {
+        return $this->getValue( self::KEY_SPECIFIC_COUNTRY );
     }
 
 }

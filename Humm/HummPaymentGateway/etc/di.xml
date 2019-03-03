@@ -98,7 +98,7 @@
     </type>
 
     <type name="\Magento\Sales\Model\Order\Email\Sender\OrderSender">
-        <plugin name="Humm-OrderSender-Plugin" type="Humm\HummPaymentGateway\Plugin\OrderSenderPlugin" />
+        <plugin name="Humm-OrderSender-Plugin" type="Humm\HummPaymentGateway\Plugin\OrderSenderPlugin"/>
     </type>
 
 </config>

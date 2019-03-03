@@ -2,14 +2,14 @@
 
 namespace Humm\HummPaymentGateway\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
 use Humm\HummPaymentGateway\Gateway\Config\Config;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Payment\Helper\Data as PaymentData;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Payment\Helper\Data as PaymentData;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Humm_Hummments_Helper_Data
@@ -48,7 +48,7 @@ class Data extends AbstractHelper {
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Payment\Helper\Data $paymentData
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager,
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager ,
      * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      */
     public function __construct(
@@ -59,24 +59,25 @@ class Data extends AbstractHelper {
         StoreManagerInterface $storeManager,
         ResolverInterface $localeResolver
     ) {
-        $this->_gatewayConfig = $gatewayConfig;
-        $this->_objectManager = $objectManager;
-        $this->_paymentData   = $paymentData;
-        $this->_storeManager  = $storeManager;
+        $this->_gatewayConfig  = $gatewayConfig;
+        $this->_objectManager  = $objectManager;
+        $this->_paymentData    = $paymentData;
+        $this->_storeManager   = $storeManager;
         $this->_localeResolver = $localeResolver;
 
-        $this->_scopeConfig   = $context->getScopeConfig();
+        $this->_scopeConfig = $context->getScopeConfig();
 
-        parent::__construct($context);
+        parent::__construct( $context );
     }
 
     /**
      * Creates an Instance of the Helper
+     *
      * @param  \Magento\Framework\ObjectManagerInterface $objectManager
+     *
      * @return \Humm\HummPaymentGateway\Helper\Data
      */
-    public static function getInstance($objectManager)
-    {
+    public static function getInstance( $objectManager ) {
         return $objectManager->create(
             get_class()
         );
@@ -90,8 +91,7 @@ class Data extends AbstractHelper {
      * Get an Instance of the Magento Object Manager
      * @return \Magento\Framework\ObjectManagerInterface
      */
-    protected function getObjectManager()
-    {
+    protected function getObjectManager() {
         return $this->_objectManager;
     }
 
@@ -99,8 +99,7 @@ class Data extends AbstractHelper {
      * Get an Instance of the Magento Store Manager
      * @return \Magento\Store\Model\StoreManagerInterface
      */
-    protected function getStoreManager()
-    {
+    protected function getStoreManager() {
         return $this->_storeManager;
     }
 
@@ -108,8 +107,7 @@ class Data extends AbstractHelper {
      * Get an Instance of the Magento UrlBuilder
      * @return \Magento\Framework\UrlInterface
      */
-    public function getUrlBuilder()
-    {
+    public function getUrlBuilder() {
         return $this->_urlBuilder;
     }
 
@@ -117,8 +115,7 @@ class Data extends AbstractHelper {
      * Get an Instance of the Magento Scope Config
      * @return \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    protected function getScopeConfig()
-    {
+    protected function getScopeConfig() {
         return $this->_scopeConfig;
     }
 
@@ -126,8 +123,7 @@ class Data extends AbstractHelper {
      * Get an Instance of the Magento Core Locale Object
      * @return \Magento\Framework\Locale\ResolverInterface
      */
-    protected function getLocaleResolver()
-    {
+    protected function getLocaleResolver() {
         return $this->_localeResolver;
     }
 
@@ -149,10 +145,11 @@ class Data extends AbstractHelper {
 
     /**
      * @param string
+     *
      * @throws NoSuchEntityException If given store doesn't exist.
      * @return string
      */
-    public function getCancelledUrl($orderId) {
+    public function getCancelledUrl( $orderId ) {
         return $this->getStoreManager()->getStore()->getBaseUrl() . "humm/checkout/cancel?orderId=$orderId";
     }
 
@@ -161,8 +158,7 @@ class Data extends AbstractHelper {
      * @throws NoSuchEntityException If given store doesn't exist.
      * @return string
      */
-    public function getStoreCode()
-    {
+    public function getStoreCode() {
         return $this->getStoreManager()->getStore()->getCode();
     }
 }

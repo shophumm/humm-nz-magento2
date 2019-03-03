@@ -14,7 +14,7 @@ define(
     ],
     function (
         $,
-        Component, 
+        Component,
         urlBuilder,
         url,
         quote) {
@@ -29,16 +29,16 @@ define(
                 template: 'Humm_HummPaymentGateway/payment/form'
             },
 
-            initialize: function() {
+            initialize: function () {
                 this._super();
                 self = this;
             },
 
-            getCode: function() {
+            getCode: function () {
                 return 'humm_gateway';
             },
 
-            getData: function() {
+            getData: function () {
                 return {
                     'method': this.item.method
                 };
@@ -51,14 +51,14 @@ define(
             /*
              * This same validation is done server-side in InitializationRequest.validateQuote()
              */
-            validate: function() {
+            validate: function () {
                 var billingAddress = quote.billingAddress();
                 var shippingAddress = quote.shippingAddress();
                 var allowedCountries = self.getAllowedCountries();
                 var totals = quote.totals();
                 var allowedCountriesArray = [];
 
-                if(typeof(allowedCountries) == 'string' && allowedCountries.length > 0){
+                if (typeof (allowedCountries) == 'string' && allowedCountries.length > 0) {
                     allowedCountriesArray = allowedCountries.split(',');
                 }
 
@@ -69,7 +69,7 @@ define(
                     return false;
                 }
 
-                if (!billingAddress.firstname || 
+                if (!billingAddress.firstname ||
                     !billingAddress.lastname ||
                     !billingAddress.street ||
                     !billingAddress.city ||
@@ -97,21 +97,21 @@ define(
                 return true;
             },
 
-            getTitle: function() {
+            getTitle: function () {
                 return window.checkoutConfig.payment.humm_gateway.title;
             },
 
-            getDescription: function() {
+            getDescription: function () {
                 return window.checkoutConfig.payment.humm_gateway.description;
             },
-            
-            getHummLogo:function(){
+
+            getHummLogo: function () {
                 var logo = window.checkoutConfig.payment.humm_gateway.logo;
 
                 return logo;
             },
 
-            getAllowedCountries: function() {
+            getAllowedCountries: function () {
                 return window.checkoutConfig.payment.humm_gateway.allowed_countries;
             }
 

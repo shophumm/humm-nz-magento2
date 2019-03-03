@@ -3,15 +3,15 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Humm\HummPaymentGateway\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Checkout\Model\Session;
 use Humm\HummPaymentGateway\Gateway\Config\Config;
+use Magento\Checkout\Model\Session;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 use Psr\Log\LoggerInterface;
 
-class RefundRequest implements BuilderInterface
-{
+class RefundRequest implements BuilderInterface {
     private $_logger;
     private $_session;
     private $_gatewayConfig;
@@ -27,8 +27,8 @@ class RefundRequest implements BuilderInterface
         Session $session
     ) {
         $this->_gatewayConfig = $gatewayConfig;
-        $this->_logger = $logger;
-        $this->_session = $session;
+        $this->_logger        = $logger;
+        $this->_session       = $session;
     }
 
     /**
@@ -40,12 +40,18 @@ class RefundRequest implements BuilderInterface
      * 'stateObject' => $stateObject
      *
      * @param array $buildSubject
+     *
      * @return array
      */
-    public function build(array $buildSubject) {
-    	$gateway_api_key = $this->_gatewayConfig->getApiKey();
-    	$gateway_merchant_id = $this->_gatewayConfig->getMerchantNumber();
-    	$gateway_refund_gateway_url = $this->_gatewayConfig->getRefundUrl();
-    	return [ 'GATEWAY_MERCHANT_ID'=>$gateway_merchant_id, 'GATEWAY_API_KEY' => $gateway_api_key, 'GATEWAY_REFUND_GATEWAY_URL'=>$gateway_refund_gateway_url ];
+    public function build( array $buildSubject ) {
+        $gateway_api_key            = $this->_gatewayConfig->getApiKey();
+        $gateway_merchant_id        = $this->_gatewayConfig->getMerchantNumber();
+        $gateway_refund_gateway_url = $this->_gatewayConfig->getRefundUrl();
+
+        return [
+            'GATEWAY_MERCHANT_ID'        => $gateway_merchant_id,
+            'GATEWAY_API_KEY'            => $gateway_api_key,
+            'GATEWAY_REFUND_GATEWAY_URL' => $gateway_refund_gateway_url
+        ];
     }
 }
