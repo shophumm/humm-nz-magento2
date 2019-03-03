@@ -64,16 +64,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
-     * Is store in Australia
-     * @return bool
-     */
-    public function isAus() {
-        $checkoutUrl = $this->getGatewayUrl();
-
-        return strpos( $checkoutUrl, ".co.nz" ) ? false : true;
-    }
-
-    /**
      * Get Gateway URL
      *
      * @return string
@@ -87,18 +77,17 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getRefundUrl() {
-        $checkoutUrl = $this->isAus() ? '.com.au' : '.co.nz';
-
-        if ( strpos( $checkoutUrl, 'sandbox' ) === false ) {
+        $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+        if ( strpos( $country_domain, 'sandbox' ) === false ) {
             $isSandbox = false;
         } else {
             $isSandbox = true; //default value
         }
 
         if ( ! $isSandbox ) {
-            return 'https://portals.humm' . $checkoutUrl . '/api/ExternalRefund/processrefund';
+            return 'https://portals.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
         } else {
-            return 'https://portalssandbox.humm' . $checkoutUrl . '/api/ExternalRefund/processrefund';
+            return 'https://portalssandbox.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
         }
     }
 
