@@ -70,7 +70,17 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getGatewayUrl() {
-        return $this->getValue( self::KEY_GATEWAY_URL );
+        $checkoutUrl = $this->getValue( self::KEY_GATEWAY_URL );
+        if ( isset( $checkoutUrl ) and strtolower( substr( $checkoutUrl, 0, 4 ) ) == 'http' ) {
+            return $checkoutUrl;
+        } else {
+            $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+            if ( ! $this->isTesting() ) {
+                return 'https://secure.shophumm' . $country_domain . '/Checkout?platform=Default';
+            } else {
+                return 'https://securesandbox.shophumm' . $country_domain . '/Checkout?platform=Default';
+            }
+        }
     }
 
     /**
@@ -79,13 +89,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      */
     public function getRefundUrl() {
         $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
-        if ( strpos( $country_domain, 'sandbox' ) === false ) {
-            $isSandbox = false;
-        } else {
-            $isSandbox = true; //default value
-        }
-
-        if ( ! $isSandbox ) {
+        if ( ! $this->isTesting() ) {
             return 'https://portals.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
         } else {
             return 'https://portalssandbox.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
