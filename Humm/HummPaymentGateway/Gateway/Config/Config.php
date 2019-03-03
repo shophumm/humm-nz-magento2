@@ -13,6 +13,7 @@ namespace Humm\HummPaymentGateway\Gateway\Config;
  */
 class Config extends \Magento\Payment\Gateway\Config\Config {
     const CODE = 'humm_gateway';
+    const PLUGIN_VERSION = 'humm_plugin_version_placeholder';
 
     const KEY_ACTIVE = 'active';
     const KEY_MERCHANT_NUMBER = 'merchant_number';
@@ -170,4 +171,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         return (bool) $this->getValue( self::KEY_IS_TESTING );
     }
 
+    /**
+     * Get the version number of this plugin itself
+     *
+     * @return string
+     */
+    public function getVersion() {
+        return self::PLUGIN_VERSION;
+    }
 }

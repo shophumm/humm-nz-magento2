@@ -21,8 +21,11 @@ class Index extends AbstractAction {
         $billingAddressParts  = preg_split( '/\r\n|\r|\n/', $billingAddress->getData( 'street' ) );
         $shippingAddressParts = preg_split( '/\r\n|\r|\n/', $shippingAddress->getData( 'street' ) );
 
-        $orderId = $order->getRealOrderId();
-        $data    = array(
+        $orderId         = $order->getRealOrderId();
+        $magento_version = \Magento\Framework\App\ObjectManager::getInstance()->get( 'Magento\Framework\App\ProductMetadataInterface' )->getVersion();
+        $plugin_version  = $this->getGatewayConfig()->getVersion();
+
+        $data = array(
             'x_currency'                   => $order->getOrderCurrencyCode(),
             'x_url_callback'               => $this->getDataHelper()->getCompleteUrl(),
             'x_url_complete'               => $this->getDataHelper()->getCompleteUrl(),
@@ -46,6 +49,7 @@ class Index extends AbstractAction {
             'x_customer_shipping_city'     => $shippingAddress->getData( 'city' ),
             'x_customer_shipping_state'    => $shippingAddress->getData( 'region' ),
             'x_customer_shipping_zip'      => $shippingAddress->getData( 'postcode' ),
+            'version_info'                 => 'plugin_' . $plugin_version . '_on_magento' . $magento_version,
             'x_test'                       => 'false'
         );
 
