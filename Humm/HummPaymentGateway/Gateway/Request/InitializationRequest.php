@@ -42,19 +42,16 @@ class InitializationRequest implements BuilderInterface {
      */
     private function validateQuote( OrderAdapter $order ) {
 
-        $this->_logger->debug( '[InitializationRequest][validateQuote]$this->_gatewayConfig->getSpecificCountry():' . ( $this->_gatewayConfig->getSpecificCountry() ) );
-        $allowedCountriesArray = explode( ',', $this->_gatewayConfig->getSpecificCountry() );
+        $allowedCountry = $this->_gatewayConfig->getSpecificCountry();
 
-        $this->_logger->debug( '[InitializationRequest][validateQuote]$order->getBillingAddress()->getCountryId():' . ( $order->getBillingAddress()->getCountryId() ) );
-        if ( ! in_array( $order->getBillingAddress()->getCountryId(), $allowedCountriesArray ) ) {
+        if ( $order->getBillingAddress()->getCountryId() != $allowedCountry ) {
             $this->_logger->debug( '[InitializationRequest][validateQuote]Country is not in array' );
             $this->_session->setHummErrorMessage( __( 'Orders from this country are not supported by Humm. Please select a different payment option.' ) );
 
             return false;
         }
 
-        $this->_logger->debug( '[InitializationRequest][validateQuote]$order->getShippingAddress()->getCountryId():' . ( $order->getShippingAddress()->getCountryId() ) );
-        if ( ! in_array( $order->getShippingAddress()->getCountryId(), $allowedCountriesArray ) ) {
+        if ( $order->getShippingAddress()->getCountryId() != $allowedCountry ) {
             $this->_session->setHummErrorMessage( __( 'Orders shipped to this country are not supported by Humm. Please select a different payment option.' ) );
 
             return false;

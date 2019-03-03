@@ -16,7 +16,7 @@
 
                 <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <gateway_url>https://securesandbox.shophumm.com.au/Checkout?platform=default</gateway_url>
-                <specificcountry>AU,NZ</specificcountry>
+                <specificcountry>AU</specificcountry>
 
                 <automatic_invoice>1</automatic_invoice>
                 <sort_order>0</sort_order>
