@@ -26,6 +26,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     const KEY_HUMM_APPROVED_ORDER_STATUS = 'humm_approved_order_status';
     const KEY_EMAIL_CUSTOMER = 'email_customer';
     const KEY_AUTOMATIC_INVOICE = 'automatic_invoice';
+    const KEY_IS_TESTING = 'is_testing';
 
     /**
      * Get Merchant number
@@ -140,6 +141,15 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      */
     public function getSpecificCountry() {
         return $this->getValue( self::KEY_SPECIFIC_COUNTRY );
+    }
+
+    /**
+     * Get if doing test transactions (request send to sandbox gateway)
+     *
+     * @return boolean
+     */
+    public function isTesting() {
+        return (bool) $this->getValue( self::KEY_IS_TESTING );
     }
 
 }
