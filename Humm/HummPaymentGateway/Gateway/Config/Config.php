@@ -65,6 +65,18 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
+     * Get Main Domain (shophumm or oxiay)
+     *
+     */
+    public function getMainDomain() {
+        $launch_time_string = $this->getValue( 'launch_time' );
+        $is_after           = ( time() - strtotime( $launch_time_string ) >= 0 );
+        $main_domain        = ( $is_after && $this->getSpecificCountry() == 'AU' ) ? 'shophumm' : 'oxipay';
+
+        return $main_domain;
+    }
+
+    /**
      * Get Gateway URL
      *
      * @return string
@@ -75,10 +87,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
             return $checkoutUrl;
         } else {
             $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+            $main_domain    = $this->getMainDomain();
             if ( ! $this->isTesting() ) {
-                return 'https://secure.shophumm' . $country_domain . '/Checkout?platform=Default';
+                return 'https://secure.' . $main_domain . $country_domain . '/Checkout?platform=Default';
             } else {
-                return 'https://securesandbox.shophumm' . $country_domain . '/Checkout?platform=Default';
+                return 'https://securesandbox.' . $main_domain . $country_domain . '/Checkout?platform=Default';
             }
         }
     }
@@ -89,10 +102,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      */
     public function getRefundUrl() {
         $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+        $main_domain    = $this->getMainDomain();
         if ( ! $this->isTesting() ) {
-            return 'https://portals.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
+            return 'https://portals.' . $main_domain . $country_domain . '/api/ExternalRefund/processrefund';
         } else {
-            return 'https://portalssandbox.shophumm' . $country_domain . '/api/ExternalRefund/processrefund';
+            return 'https://portalssandbox.' . $main_domain . $country_domain . '/api/ExternalRefund/processrefund';
         }
     }
 
