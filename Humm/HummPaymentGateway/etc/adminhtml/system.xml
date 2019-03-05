@@ -8,11 +8,6 @@
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="force_humm" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Force Humm</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>You will switch to Humm if this is set to 'yes' and the store is in Australia. Otherwise you will be automatically switched over on the official Humm launch date</tooltip>
-                </field>
                 <field id="merchant_number" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Merchant Number</label>
                     <validate>required-entry</validate>
@@ -25,6 +20,11 @@
                 <field id="is_testing" translate="label" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Is Testing?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="force_humm" translate="label" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Force Humm</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>You will switch to Humm if this is set to 'yes' and the store is in Australia. Otherwise you will be automatically switched over on the official Humm launch date</tooltip>
                 </field>
                 <field id="gateway_url" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Humm Gateway URL (Leave empty if not sure)</label>
