@@ -70,18 +70,14 @@ final class ConfigProvider implements ConfigProviderInterface {
     public function getConfig() {
         $this->updateLaunchDate();
         $logoFile = $this->_gatewayConfig->getLogo();
-        if ( strlen( $logoFile ) > 0 ) {
-            $logo = '../pub/media/sales/store/logo/' . $logoFile;
-        } else {
-            /** @var $om \Magento\Framework\ObjectManagerInterface */
-            $om = \Magento\Framework\App\ObjectManager::getInstance();
-            /** @var $request \Magento\Framework\App\RequestInterface */
-            $request = $om->get( 'Magento\Framework\App\RequestInterface' );
-            $params  = array();
-            $params  = array_merge( [ '_secure' => $request->isSecure() ], $params );
 
-            $logo = $this->_assetRepo->getUrlWithParams( 'Humm_HummPaymentGateway::images/humm_logo.png', $params );
-        }
+        /** @var $om \Magento\Framework\ObjectManagerInterface */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+        /** @var $request \Magento\Framework\App\RequestInterface */
+        $request = $om->get( 'Magento\Framework\App\RequestInterface' );
+        $params  = array();
+        $params  = array_merge( [ '_secure' => $request->isSecure() ], $params );
+        $logo = $this->_assetRepo->getUrlWithParams( 'Humm_HummPaymentGateway::images/' . $logoFile, $params );
 
         $config = [
             'payment' => [

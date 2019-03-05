@@ -15,9 +15,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     const CODE = 'humm_gateway';
 
     const KEY_ACTIVE = 'active';
-    const KEY_TITLE = 'title';
-    const KEY_DESCRIPTION = 'description';
-    const KEY_GATEWAY_LOGO = 'gateway_logo';
     const KEY_MERCHANT_NUMBER = 'merchant_number';
     const KEY_API_KEY = 'api_key';
     const KEY_GATEWAY_URL = 'gateway_url';
@@ -43,7 +40,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getTitle() {
-        return $this->getValue( self::KEY_TITLE );
+        $launch_time_string = $this->getValue( 'launch_time' );
+        $is_after           = ( time() - strtotime( $launch_time_string ) >= 0 );
+        $title              = ( $is_after && $this->getSpecificCountry() == 'AU' ) ? 'Humm' : 'Oxipay';
+
+        return $title;
     }
 
     /**
@@ -52,7 +53,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getLogo() {
-        return $this->getValue( self::KEY_GATEWAY_LOGO );
+        return ( $this->getTitle() == 'Humm' ) ? 'humm_logo.png' : 'oxipay_logo.png';
     }
 
     /**
@@ -61,7 +62,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getDescription() {
-        return $this->getValue( self::KEY_DESCRIPTION );
+        return ( $this->getTitle() == 'Humm' ) ? 'Streeetch your payments' : 'Pay the easier way';
     }
 
     /**
@@ -69,11 +70,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      *
      */
     public function getMainDomain() {
-        $launch_time_string = $this->getValue( 'launch_time' );
-        $is_after           = ( time() - strtotime( $launch_time_string ) >= 0 );
-        $main_domain        = ( $is_after && $this->getSpecificCountry() == 'AU' ) ? 'shophumm' : 'oxipay';
-
-        return $main_domain;
+        return ( $this->getTitle() == 'Humm' ) ? 'shophumm' : 'oxipay';
     }
 
     /**
