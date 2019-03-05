@@ -40,6 +40,9 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getTitle() {
+        if ( $this->getValue( 'force_humm' ) ) {
+            return 'Humm';
+        }
         $launch_time_string = $this->getValue( 'launch_time' );
         $is_after           = ( time() - strtotime( $launch_time_string ) >= 0 );
         $title              = ( $is_after && $this->getSpecificCountry() == 'AU' ) ? 'Humm' : 'Oxipay';
