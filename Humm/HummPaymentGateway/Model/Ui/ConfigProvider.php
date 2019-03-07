@@ -46,8 +46,8 @@ final class ConfigProvider implements ConfigProviderInterface {
     }
 
     private function updateLaunchDate() {
-        $launch_time_string             = $this->_gatewayConfig->getValue( 'payment/humm_gateway/launch_time' );
-        $launch_time_update_time_string = $this->_gatewayConfig->getValue( 'payment/humm_gateway/launch_time_updated' );
+        $launch_time_string             = $this->_gatewayConfig->getLaunchTime();
+        $launch_time_update_time_string = $this->_gatewayConfig->getLaunchTimeUpdated();
         if ( empty( $launch_time_string ) || ( time() - $launch_time_update_time_string >= 3600 ) ) {
             $remote_launch_time_string = '';
             try {

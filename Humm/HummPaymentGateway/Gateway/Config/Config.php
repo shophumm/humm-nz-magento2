@@ -25,9 +25,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     const KEY_EMAIL_CUSTOMER = 'email_customer';
     const KEY_AUTOMATIC_INVOICE = 'automatic_invoice';
     const KEY_IS_TESTING = 'is_testing';
+    const KEY_LAUNCH_TIME = 'launch_time';
+    const KEY_LAUNCH_TIME_UPDATED = 'launch_time_updated';
 
     /**
-     * Get Merchant number
+     * Get Merchant Number
      *
      * @return string
      */
@@ -36,13 +38,30 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
-     * Get Merchant number
+     * Get Launch Time
+     *
+     * @return string
+     */
+    public function getLaunchTime() {
+        return $this->getValue( self::KEY_LAUNCH_TIME );
+    }
+
+    /**
+     * Get Launch Time Updated
+     *
+     * @return string
+     */
+    public function getLaunchTimeUpdated() {
+        return $this->getValue( self::KEY_LAUNCH_TIME_UPDATED );
+    }
+
+    /**
+     * Get Title
      *
      * @return string
      */
     public function getTitle() {
-        $launch_time_string = $this->getValue( 'launch_time' );
-        $is_after           = ( time() - strtotime( $launch_time_string ) >= 0 );
+        $is_after           = ( time() - strtotime( $this->getLaunchTime() ) >= 0 );
         if ( $this->getValue( 'force_humm' ) ) {
             $is_after = true;
         }
