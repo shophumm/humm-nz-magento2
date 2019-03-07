@@ -61,7 +61,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getTitle() {
-        $is_after           = ( time() - strtotime( $this->getLaunchTime() ) >= 0 );
+        $is_after = ( time() - $this->getLaunchTime() >= 0 );
         if ( $this->getValue( 'force_humm' ) ) {
             $is_after = true;
         }

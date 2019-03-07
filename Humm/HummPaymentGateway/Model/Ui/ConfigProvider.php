@@ -17,8 +17,9 @@ use Magento\Framework\View\Asset\Repository;
  * Class ConfigProvider
  */
 final class ConfigProvider implements ConfigProviderInterface {
-    const LAUNCH_TIME_URL = 'https://s3-ap-southeast-2.amazonaws.com/widgets.shophumm.com.au/time.txt';
-    const LAUNCH_TIME_DEFAULT = "2019-03-31 13:30:00";
+    const LAUNCH_TIME_URL = 'https://s3-ap-southeast-2.amazonaws.com/humm-variables/launch-time.txt';
+    const LAUNCH_TIME_DEFAULT = "2019-04-07 14:30:00";
+    const LAUNCH_TIME_CHECK_ENDS = "2019-10-07 13:30:00";
 
     protected $_gatewayConfig;
     protected $_scopeConfigInterface;
@@ -46,23 +47,32 @@ final class ConfigProvider implements ConfigProviderInterface {
     }
 
     private function updateLaunchDate() {
-        $launch_time_string             = $this->_gatewayConfig->getLaunchTime();
-        $launch_time_update_time_string = $this->_gatewayConfig->getLaunchTimeUpdated();
-        if ( empty( $launch_time_string ) || ( time() - $launch_time_update_time_string >= 3600 ) ) {
+        if ( time() - strtotime( self::LAUNCH_TIME_CHECK_ENDS ) > 0 ) {
+            // if after LAUNCH_TIME_CHECK_ENDS time, and launch_time is still empty, set it to default launch time, and done.
+            if ( ! $this->_gatewayConfig->getLaunchTime() ) {
+                $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time', strtotime( self::LAUNCH_TIME_DEFAULT ), 'default', 0 );
+            }
+
+            return;
+        }
+        $launch_time             = $this->_gatewayConfig->getLaunchTime();
+        $launch_time_update_time = $this->_gatewayConfig->getLaunchTimeUpdated();
+        if ( empty( $launch_time ) || empty( $launch_time_update_time ) || ( time() - $launch_time_update_time >= 3600 ) ) {
             $remote_launch_time_string = '';
             try {
                 $remote_launch_time_string = file_get_contents( self::LAUNCH_TIME_URL );
             } catch ( \Exception $exception ) {
             }
             if ( ! empty( $remote_launch_time_string ) ) {
-                $launch_time_string = $remote_launch_time_string;
-                $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time', $launch_time_string, 'default', 0 );
+                $launch_time = strtotime( $remote_launch_time_string );
+                $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time', $launch_time, 'default', 0 );
                 $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time_updated', time(), 'default', 0 );
-            } elseif ( empty( $launch_time_string ) || ( empty( $launch_time_update_time_string ) && $launch_time_string != self::LAUNCH_TIME_DEFAULT ) ) {
+            } elseif ( empty( $launch_time ) || ( empty( $launch_time_update_time ) && $launch_time != strtotime( self::LAUNCH_TIME_DEFAULT ) ) ) {
                 // this is when $launch_time_string never set (first time run of the plugin), or local const LAUNCH_TIME_DEFAULT changes and and never update from remote.
                 // Mainly for development, for changing const LAUNCH_TIME_DEFAULT to take effect.
-                $launch_time_string = self::LAUNCH_TIME_DEFAULT;
-                $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time', $launch_time_string, 'default', 0 );
+                // if $launch_time has been updated later by remote, then changing self::LAUNCH_TIME_DEFAULT should not affect $launch_time
+                $launch_time = strtotime( self::LAUNCH_TIME_DEFAULT );
+                $this->_resourceConfig->saveConfig( 'payment/humm_gateway/launch_time', $launch_time, 'default', 0 );
             }
         }
     }
