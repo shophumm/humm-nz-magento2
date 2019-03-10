@@ -18,8 +18,8 @@ use Magento\Framework\View\Asset\Repository;
  */
 final class ConfigProvider implements ConfigProviderInterface {
     const LAUNCH_TIME_URL = 'https://s3-ap-southeast-2.amazonaws.com/humm-variables/launch-time.txt';
-    const LAUNCH_TIME_DEFAULT = "2019-04-07 14:30:00";
-    const LAUNCH_TIME_CHECK_ENDS = "2019-10-07 13:30:00";
+    const LAUNCH_TIME_DEFAULT = "2019-04-07 14:30:00 UTC";
+    const LAUNCH_TIME_CHECK_ENDS = "2019-10-07 13:30:00 UTC";
 
     protected $_gatewayConfig;
     protected $_scopeConfigInterface;
