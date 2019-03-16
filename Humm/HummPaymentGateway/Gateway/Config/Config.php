@@ -89,11 +89,24 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
-     * Get Main Domain (shophumm or oxiay)
+     * Get Gateway Domain
      *
+     * @return string
      */
-    public function getMainDomain() {
-        return ( $this->getTitle() == 'Humm' ) ? 'shophumm' : 'oxipay';
+    public function getGatewayDomain() {
+        $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+        $title          = $this->getTitle();
+
+        $domainsTest = array(
+            'Humm'   => 'test3-cart.shophumm',
+            'Oxipay' => 'securesandbox.oxipay'
+        );
+        $domains     = array(
+            'Humm'   => 'cart.shophumm',
+            'Oxipay' => 'secure.oxipay'
+        );
+
+        return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain;
     }
 
     /**
@@ -106,13 +119,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         if ( isset( $checkoutUrl ) and strtolower( substr( $checkoutUrl, 0, 4 ) ) == 'http' ) {
             return $checkoutUrl;
         } else {
-            $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
-            $main_domain    = $this->getMainDomain();
-            if ( ! $this->isTesting() ) {
-                return 'https://secure.' . $main_domain . $country_domain . '/Checkout?platform=Default';
-            } else {
-                return 'https://securesandbox.' . $main_domain . $country_domain . '/Checkout?platform=Default';
-            }
+            return $this->getGatewayDomain() . '/Checkout?platform=Default';
         }
     }
 
@@ -121,13 +128,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getRefundUrl() {
-        $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
-        $main_domain    = $this->getMainDomain();
-        if ( ! $this->isTesting() ) {
-            return 'https://portals.' . $main_domain . $country_domain . '/api/ExternalRefund/processrefund';
-        } else {
-            return 'https://portalssandbox.' . $main_domain . $country_domain . '/api/ExternalRefund/processrefund';
-        }
+        return $this->getGatewayDomain() . '/api/ExternalRefund/processrefund';
     }
 
     /**
