@@ -3,19 +3,21 @@ branches:
     - master
     - develop
 environment:
-  release_name: "oxipay-magento-2.x_v%appveyor_build_version%.zip"
+  tag_name: "%APPVEYOR_REPO_TAG_NAME%"
+  release_name: "oxipay-magento-2.x_v%appveyor_repo_tag_name%.zip"
 before_build:
   - ps: (Get-Content Humm/HummPaymentGateway/Gateway/Config/Config.php).replace("humm_plugin_version_placeholder", $env:APPVEYOR_REPO_TAG_NAME ) | Set-Content Humm/HummPaymentGateway/Gateway/Config/Config.php
 build_script:
-  - ps: Invoke-Expression "7z a $env:release_name"
+  - ps: Invoke-Expression "7z a $env:release_name -xr'!.git' -x'!appveyor.yml' -x'!.gitignore'"
 artifacts:
   - path: $(release_name)
-    name: $(appveyor_build_version)
+    name: $(tag_name)
     type: zip
 deploy:
-  release: v$(appveyor_build_version)
-  description: $(APPVEYOR_REPO_COMMIT_MESSAGE)
   provider: GitHub
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: $(APPVEYOR_REPO_COMMIT_MESSAGE)
   auth_token:
     secure: UaYGIzw09m+5DkdlA5zDuCr5x71z0KFvgquQhFSMxuJiUmltfok5GuMk8aGpG5U6
   artifact: /.*\.zip/
