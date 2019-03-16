@@ -49,7 +49,7 @@ class Index extends AbstractAction {
             'x_customer_shipping_city'     => $shippingAddress->getData( 'city' ),
             'x_customer_shipping_state'    => $shippingAddress->getData( 'region' ),
             'x_customer_shipping_zip'      => $shippingAddress->getData( 'postcode' ),
-            'version_info'                 => 'plugin_' . $plugin_version . '_on_magento' . $magento_version,
+            'version_info'                 => 'Humm_' . $plugin_version . '_on_magento' . substr( $magento_version, 0, 3 ),
             'x_test'                       => 'false'
         );
 
