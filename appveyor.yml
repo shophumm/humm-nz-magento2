@@ -4,7 +4,7 @@ branches:
     - develop
 environment:
   tag_name: "%APPVEYOR_REPO_TAG_NAME%"
-  release_name: "oxipay-magento-2.x_v%appveyor_repo_tag_name%.zip"
+  release_name: "humm-magento-2.x_v%appveyor_repo_tag_name%.zip"
 before_build:
   - ps: (Get-Content Humm/HummPaymentGateway/Gateway/Config/Config.php).replace("humm_plugin_version_placeholder", $env:APPVEYOR_REPO_TAG_NAME ) | Set-Content Humm/HummPaymentGateway/Gateway/Config/Config.php
 build_script:
@@ -28,7 +28,7 @@ deploy:
 notifications:
   - provider: Email
     to:
-      - devadmin@oxipay.com.au
+      - devadmin@shophumm.com.au
   - provider: Slack
     auth_token:
       secure: lgjOGAi/xfra+Ezjg696zGwfMyEivWbNo6ho9GwbeQConO2VwxX2txxjWrZVqAaxTtI7y/ODz0HG3uMfIiM5wF2Fa0KsT8I+KL7PW9BbzpQ=
