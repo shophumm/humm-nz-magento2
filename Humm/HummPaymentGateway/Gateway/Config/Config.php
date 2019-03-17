@@ -89,27 +89,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
-     * Get Gateway Domain
-     *
-     * @return string
-     */
-    public function getGatewayDomain() {
-        $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
-        $title          = $this->getTitle();
-
-        $domainsTest = array(
-            'Humm'   => 'test3-cart.shophumm',
-            'Oxipay' => 'securesandbox.oxipay'
-        );
-        $domains     = array(
-            'Humm'   => 'cart.shophumm',
-            'Oxipay' => 'secure.oxipay'
-        );
-
-        return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain;
-    }
-
-    /**
      * Get Gateway URL
      *
      * @return string
@@ -119,7 +98,19 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         if ( isset( $checkoutUrl ) and strtolower( substr( $checkoutUrl, 0, 4 ) ) == 'http' ) {
             return $checkoutUrl;
         } else {
-            return $this->getGatewayDomain() . '/Checkout?platform=Default';
+            $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+            $title          = $this->getTitle();
+
+            $domainsTest = array(
+                'Humm'   => 'test3-cart.shophumm',
+                'Oxipay' => 'securesandbox.oxipay'
+            );
+            $domains     = array(
+                'Humm'   => 'cart.shophumm',
+                'Oxipay' => 'secure.oxipay'
+            );
+
+            return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain . '/Checkout?platform=Default';
         }
     }
 
@@ -128,7 +119,19 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getRefundUrl() {
-        return $this->getGatewayDomain() . '/api/ExternalRefund/processrefund';
+        $country_domain = $this->getSpecificCountry() == 'NZ' ? '.co.nz' : '.com.au';  // .com.au is the default value
+        $title          = $this->getTitle();
+
+        $domainsTest = array(
+            'Humm'   => 'test3-cart.shophumm',
+            'Oxipay' => 'portalssandbox.oxipay'
+        );
+        $domains     = array(
+            'Humm'   => 'cart.shophumm',
+            'Oxipay' => 'portals.oxipay'
+        );
+
+        return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain . '/api/ExternalRefund/processrefund';
     }
 
     /**
