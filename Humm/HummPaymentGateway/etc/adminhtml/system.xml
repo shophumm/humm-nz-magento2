@@ -22,9 +22,9 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="force_humm" translate="label" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Force Humm</label>
+                    <label>Force humm</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>You will switch to Humm if this is set to 'yes' and the store is in Australia. Otherwise you will be automatically switched over on the official Humm launch date</tooltip>
+                    <tooltip>You will switch to humm if this is set to 'yes' and the store is in Australia. Otherwise you will be automatically switched over on the official humm launch date</tooltip>
                 </field>
                 <field id="gateway_url" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Humm Gateway URL (Leave empty if not sure)</label>
@@ -34,7 +34,7 @@
                     <source_model>Humm\HummPaymentGateway\Model\Config\Source\RestrictedCountry</source_model>
                 </field>
                 <field id="humm_approved_order_status" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Status for Humm Approved Orders</label>
+                    <label>Status for humm Approved Orders</label>
                     <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                     <tooltip>Select ‘Humm Processed’ if you want to easily locate all Humm transactions in the Orders page.</tooltip>
                     <validate>required-entry</validate>

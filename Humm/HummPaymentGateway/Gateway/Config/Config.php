@@ -115,7 +115,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     /**
-     * get the Humm refund gateway Url
+     * get the humm refund gateway Url
      * @return string
      */
     public function getRefundUrl() {

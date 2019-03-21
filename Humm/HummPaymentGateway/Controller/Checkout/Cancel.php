@@ -15,7 +15,7 @@ class Cancel extends AbstractAction {
             $this->getLogger()->debug( 'Requested order cancellation by customer. OrderId: ' . $order->getIncrementId() );
             $this->getCheckoutHelper()->cancelCurrentOrder( "Humm: " . ( $order->getId() ) . " was cancelled by the customer." );
             $this->getCheckoutHelper()->restoreQuote(); //restore cart
-            $this->getMessageManager()->addWarningMessage( __( "You have successfully canceled your Humm payment. Please click on 'Update Shopping Cart'." ) );
+            $this->getMessageManager()->addWarningMessage( __( "You have successfully canceled your humm payment. Please click on 'Update Shopping Cart'." ) );
         }
         $this->_redirect( 'checkout/cart' );
     }

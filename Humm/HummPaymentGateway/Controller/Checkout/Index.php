@@ -109,7 +109,7 @@ class Index extends AbstractAction {
         } catch ( Exception $ex ) {
             $this->getLogger()->debug( 'An exception was encountered in humm/checkout/index: ' . $ex->getMessage() );
             $this->getLogger()->debug( $ex->getTraceAsString() );
-            $this->getMessageManager()->addErrorMessage( __( 'Unable to start Humm Checkout.' ) );
+            $this->getMessageManager()->addErrorMessage( __( 'Unable to start humm Checkout.' ) );
         }
     }
 

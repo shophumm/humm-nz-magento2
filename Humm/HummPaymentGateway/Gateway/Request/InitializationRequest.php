@@ -68,13 +68,13 @@ class InitializationRequest implements BuilderInterface {
 
         if ( $order->getBillingAddress()->getCountryId() != $allowedCountry ) {
             $this->_logger->debug( '[InitializationRequest][validateQuote]Country is not in array' );
-            $this->_session->setHummErrorMessage( __( 'Orders from this country are not supported by Humm. Please select a different payment option.' ) );
+            $this->_session->setHummErrorMessage( __( 'Orders from this country are not supported by humm. Please select a different payment option.' ) );
 
             return false;
         }
 
         if ( $order->getShippingAddress()->getCountryId() != $allowedCountry ) {
-            $this->_session->setHummErrorMessage( __( 'Orders shipped to this country are not supported by Humm. Please select a different payment option.' ) );
+            $this->_session->setHummErrorMessage( __( 'Orders shipped to this country are not supported by humm. Please select a different payment option.' ) );
 
             return false;
         }

@@ -23,7 +23,7 @@ class Success extends AbstractAction {
         }
 
         if ( ! $orderId ) {
-            $this->getLogger()->debug( "Humm returned a null order id. This may indicate an issue with the Humm payment gateway." );
+            $this->getLogger()->debug( "Humm returned a null order id. This may indicate an issue with the humm payment gateway." );
             $this->_redirect( 'checkout/onepage/error', array( '_secure' => false ) );
 
             return;
@@ -78,12 +78,12 @@ class Success extends AbstractAction {
                 $this->invoiceOrder( $order, $transactionId );
             }
 
-            $this->getMessageManager()->addSuccessMessage( __( "Your payment with Humm is complete" ) );
+            $this->getMessageManager()->addSuccessMessage( __( "Your payment with humm is complete" ) );
             $this->_redirect( 'checkout/onepage/success', array( '_secure' => false ) );
         } else {
             $this->getCheckoutHelper()->cancelCurrentOrder( "Order #" . ( $order->getId() ) . " was rejected by humm. Transaction #$transactionId." );
             $this->getCheckoutHelper()->restoreQuote(); //restore cart
-            $this->getMessageManager()->addErrorMessage( __( "There was an error in the Humm payment" ) );
+            $this->getMessageManager()->addErrorMessage( __( "There was an error in the humm payment" ) );
             $this->_redirect( 'checkout/cart', array( '_secure' => false ) );
         }
     }
