@@ -85,7 +85,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @return string
      */
     public function getDescription() {
-        return ( $this->getTitle() == 'Humm' ) ? 'Streeetch your payments' : 'Pay the easier way';
+        return ( $this->getTitle() == 'Humm' ) ? 'Pay in slices. No interest ever.' : 'Pay the easier way';
     }
 
     /**
