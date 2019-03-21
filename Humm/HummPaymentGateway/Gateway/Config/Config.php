@@ -102,7 +102,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
             $title          = $this->getTitle();
 
             $domainsTest = array(
-                'Humm'   => 'test3-cart.shophumm',
+                'Humm'   => 'integration-cart.shophumm',
                 'Oxipay' => 'securesandbox.oxipay'
             );
             $domains     = array(
@@ -123,7 +123,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         $title          = $this->getTitle();
 
         $domainsTest = array(
-            'Humm'   => 'test3-cart.shophumm',
+            'Humm'   => 'integration-cart.shophumm',
             'Oxipay' => 'portalssandbox.oxipay'
         );
         $domains     = array(
