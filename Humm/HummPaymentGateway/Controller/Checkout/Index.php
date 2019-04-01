@@ -11,7 +11,7 @@ class Index extends AbstractAction {
 
     private function getPayload( $order ) {
         if ( $order == null ) {
-            $this->getLogger()->debug( 'Unable to get order from last lodged order id. Possibly related to a failed database call' );
+            $this->getLogger()->addError( 'Unable to get order from last lodged order id. Possibly related to a failed database call' );
             $this->_redirect( 'checkout/onepage/error', array( '_secure' => false ) );
         }
 
@@ -91,24 +91,25 @@ class Index extends AbstractAction {
     public function execute() {
         try {
             $order = $this->getOrder();
-            if ( $order->getState() === Order::STATE_PENDING_PAYMENT ) {
-                $payload = $this->getPayload( $order );
-                $this->postToCheckout( $this->getGatewayConfig()->getGatewayUrl(), $payload );
-            } else if ( $order->getState() === Order::STATE_CANCELED ) {
+            if ( $order->getState() === Order::STATE_CANCELED ) {
                 $errorMessage = $this->getCheckoutSession()->getHummErrorMessage(); //set in InitializationRequest
                 if ( $errorMessage ) {
                     $this->getMessageManager()->addWarningMessage( $errorMessage );
                     $errorMessage = $this->getCheckoutSession()->unsHummErrorMessage();
                 }
+                $this->getLogger()->addNotice( 'Order in state: ' . $order->getState() );
                 $this->getCheckoutHelper()->restoreQuote(); //restore cart
                 $this->_redirect( 'checkout/cart' );
             } else {
-                $this->getLogger()->debug( 'Order in unrecognized state: ' . $order->getState() );
-                $this->_redirect( 'checkout/cart' );
+                if ( $order->getState() !== Order::STATE_PENDING_PAYMENT ) {
+                    $this->getLogger()->addNotice( 'Order in state: ' . $order->getState() );
+                }
+                $payload = $this->getPayload( $order );
+                $this->postToCheckout( $this->getGatewayConfig()->getGatewayUrl(), $payload );
             }
         } catch ( Exception $ex ) {
-            $this->getLogger()->debug( 'An exception was encountered in humm/checkout/index: ' . $ex->getMessage() );
-            $this->getLogger()->debug( $ex->getTraceAsString() );
+            $this->getLogger()->addError( 'An exception was encountered in humm/checkout/index: ' . $ex->getMessage() );
+            $this->getLogger()->addError( $ex->getTraceAsString() );
             $this->getMessageManager()->addErrorMessage( __( 'Unable to start humm Checkout.' ) );
         }
     }
