@@ -10,6 +10,7 @@
         <payment>
             <humm_gateway>
                 <model>HummPaymentGatewayFacade</model>
+                <title>humm</title>
                 <active>0</active> <!--Plugin disabled by default. The user must configure it first.-->
                 <force_humm>0</force_humm>
 
