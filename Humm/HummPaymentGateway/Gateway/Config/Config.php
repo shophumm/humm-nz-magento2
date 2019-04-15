@@ -123,15 +123,15 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         $title          = $this->getTitle();
 
         $domainsTest = array(
-            'Humm'   => 'integration-cart.shophumm',
+            'Humm'   => 'integration-buyerapi.shophumm',
             'Oxipay' => 'portalssandbox.oxipay'
         );
         $domains     = array(
-            'Humm'   => 'cart.shophumm',
+            'Humm'   => 'buyerapi.shophumm',
             'Oxipay' => 'portals.oxipay'
         );
 
-        return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain . '/api/ExternalRefund/processrefund';
+        return 'https://' . ( $this->isTesting() ? $domainsTest[ $title ] : $domains[ $title ] ) . $country_domain . '/api/ExternalRefund/v1/processrefund';
     }
 
     /**
