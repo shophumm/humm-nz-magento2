@@ -6,9 +6,12 @@ environment:
   tag_name: "%APPVEYOR_REPO_TAG_NAME%"
   release_name: "humm-magento-2.x_v%appveyor_repo_tag_name%.zip"
 before_build:
-  - ps: (Get-Content Humm/HummPaymentGateway/Gateway/Config/Config.php).replace("humm_plugin_version_placeholder", $env:APPVEYOR_REPO_TAG_NAME ) | Set-Content Humm/HummPaymentGateway/Gateway/Config/Config.php
+  - ps: (Get-Content Gateway/Config/Config.php).replace("humm_plugin_version_placeholder", $env:APPVEYOR_REPO_TAG_NAME ) | Set-Content Gateway/Config/Config.php
 build_script:
-  - ps: Invoke-Expression "7z a $env:release_name -xr'!.git' -x'!appveyor.yml' -x'!.gitignore'"
+  - ps: Invoke-Expression "rm .\.git\, .\.gitignore, .\appveyor.yml -r -fo"
+  - ps: Invoke-Expression "mkdir -p Humm/HummPaymentGateway"
+  - ps: Invoke-Expression "ls -Exclude Humm | mv -Destination Humm/HummPaymentGateway"
+  - ps: Invoke-Expression "7z a $env:release_name Humm"
 artifacts:
   - path: $(release_name)
     name: $(tag_name)
