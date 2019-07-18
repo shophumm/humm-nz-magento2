@@ -13,7 +13,7 @@ This assumes that you have signed the required Merchant Agreement and have been 
 
 2. Require the Humm Payment Gateway Module
 
-        composer require humm/module-humm-payment-gateway
+        composer require humm/module-humm-payment-gateway:dev-master
 
 3. Enable the module
        
