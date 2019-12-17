@@ -46,9 +46,6 @@ class InitializationRequest implements BuilderInterface {
      * @return bool;
      */
     private function validateQuote( OrderAdapter $order ) {
-        if ( $this->_gatewayConfig->getTitle() == 'Oxipay' ) {
-            $total = $order->getGrandTotalAmount();
-        }
 
         $allowedCountry = $this->_gatewayConfig->getSpecificCountry();
 
