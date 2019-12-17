@@ -12,9 +12,16 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Quote\Setup\QuoteSetupFactory;
 use Magento\Sales\Setup\SalesSetupFactory;
 
+/**
+ * Class InstallData
+ * @package Humm\HummPaymentGateway\Setup
+ */
+
 class InstallData implements InstallDataInterface {
+
     /**
-     * {@inheritdoc}
+     * @param ModuleDataSetupInterface $setup
+     * @param ModuleContextInterface $context
      */
     public function install( ModuleDataSetupInterface $setup, ModuleContextInterface $context ) {
         /**

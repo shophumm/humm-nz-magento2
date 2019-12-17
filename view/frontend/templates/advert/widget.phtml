@@ -1,0 +1,6 @@
+<?php list($productPrice, $littleBig) = $block->_getProductPrice(); ?>
+<?php if (!$littleBig) : ?>
+    <script src="https://widgets.shophumm.com.au/content/scripts/price-info.js?productPrice=<?php echo $productPrice ?>&LittleThings"></script>
+<?php else: ?>
+    <script src="https://widgets.shophumm.com.au/content/scripts/price-info.js?productPrice=<?php echo $productPrice ?>&BigOnly"></script>
+<?php endif; ?>

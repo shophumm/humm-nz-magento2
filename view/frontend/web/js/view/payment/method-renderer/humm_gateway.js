@@ -2,8 +2,6 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-/*browser:true*/
-/*global define*/
 define(
     [
         'jquery',
@@ -11,13 +9,22 @@ define(
         'Magento_Checkout/js/model/url-builder',
         'mage/url',
         'Magento_Checkout/js/model/quote',
+        'Magento_Customer/js/customer-data',
+        'Magento_Checkout/js/model/error-processor',
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Humm_HummPaymentGateway/js/action/form-builder',
     ],
     function (
         $,
         Component,
         urlBuilder,
         url,
-        quote) {
+        quote,
+        customerData,
+        errorProcessor,
+        fullScreenLoader,
+        formBuilder
+    ) {
         'use strict';
 
         var self;
@@ -44,17 +51,30 @@ define(
                 };
             },
 
-            afterPlaceOrder: function () {
-                window.location.replace(url.build('humm/checkout/index'));
+            afterPlaceOrder: function (x, event) {
+                console.log("redirect humm payment..")
+                self.messageContainer.clear();
+                self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment,please waiting..'});
+                if (event) {
+                    event.preventDefault();
+                }
+                let hummControllerUrl = url.build('humm/checkout/index');
+                $.post(hummControllerUrl, 'json').done(function (response) {
+                    formBuilder(response).submit();
+                })
+                    .fail(function (response) {
+                        errorProcessor.process(response, this.messageContainer);
+                    })
+                    .always(function () {
+                        fullScreenLoader.stopLoader();
+                    });
+                return true;
             },
-
-            /*
-             * This same validation is done server-side in InitializationRequest.validateQuote()
-             */
             validate: function () {
                 var billingAddress = quote.billingAddress();
                 var shippingAddress = quote.shippingAddress();
                 var allowedCountries = self.getAllowedCountries();
+                var orderMinVal = parseInt(self.getHummOrderValue());
                 var totals = quote.totals();
                 var allowedCountriesArray = [];
 
@@ -68,6 +88,7 @@ define(
                     self.messageContainer.addErrorMessage({'message': 'Please enter your billing address'});
                     return false;
                 }
+
 
                 if (!billingAddress.firstname ||
                     !billingAddress.lastname ||
@@ -89,8 +110,8 @@ define(
                     return false;
                 }
 
-                if (totals.grand_total < 20) {
-                    self.messageContainer.addErrorMessage({'message': 'Humm doesn\'t support purchases less than $20.'});
+                if (totals.grand_total < orderMinVal) {
+                    self.messageContainer.addErrorMessage({'message': 'Humm doesn\'t support purchases less than $' + orderMinVal});
                     return false;
                 }
 
@@ -111,10 +132,12 @@ define(
                 return logo;
             },
 
+            getHummOrderValue: function () {
+                return window.checkoutConfig.payment.humm_gateway.order_min_value;
+            },
             getAllowedCountries: function () {
                 return window.checkoutConfig.payment.humm_gateway.allowed_countries;
             }
 
         });
-    }
-);
+    });

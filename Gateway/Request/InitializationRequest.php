@@ -13,6 +13,11 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class InitializationRequest
+ * @package Humm\HummPaymentGateway\Gateway\Request
+ */
+
 class InitializationRequest implements BuilderInterface {
     private $_logger;
     private $_session;

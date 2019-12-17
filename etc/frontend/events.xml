@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi ="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="humm_payment_cancel">
+        <observer name="stateCheck" instance="Humm\HummPaymentGateway\Model\Observer\CheckState" />
+    </event>
+</config>

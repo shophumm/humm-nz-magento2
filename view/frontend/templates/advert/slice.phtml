@@ -1,0 +1,7 @@
+<?php $homePageUrl = '';
+$homePageUrl = $block->_getCustomUrl(); ?>
+<?php if (empty($homePageUrl)) : ?>
+    <script src="https://widgets.shophumm.com.au/content/scripts/more-info-small-slices.js"></script>
+<?php else: ?>
+    <?php echo $homePageUrl ?>
+<?php endif; ?>

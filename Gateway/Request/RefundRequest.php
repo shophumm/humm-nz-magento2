@@ -11,6 +11,11 @@ use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class RefundRequest
+ * @package Humm\HummPaymentGateway\Gateway\Request
+ */
+
 class RefundRequest implements BuilderInterface {
     private $_logger;
     private $_session;

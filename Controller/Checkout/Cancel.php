@@ -2,22 +2,35 @@
 
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
+use Magento\Framework\App\Action\Context;
+
 /**
+ * Roger.bi@flexigroup.com.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
  */
-class Cancel extends AbstractAction {
+class Cancel extends AbstractAction
+{
 
-    public function execute() {
-        $orderId = $this->getRequest()->get( 'orderId' );
-        $order   = $this->getOrderById( $orderId );
-
-        if ( $order && $order->getId() ) {
-            $this->getLogger()->debug( 'Requested order cancellation by customer. OrderId: ' . $order->getIncrementId() );
-            $this->getCheckoutHelper()->cancelCurrentOrder( "Humm: " . ( $order->getId() ) . " was cancelled by the customer." );
-            $this->getCheckoutHelper()->restoreQuote(); //restore cart
-            $this->getMessageManager()->addWarningMessage( __( "You have successfully canceled your humm payment. Please click on 'Update Shopping Cart'." ) );
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     */
+    public function execute()
+    {
+        $orderId = $this->getRequest()->get('orderId');
+        $order = $orderId ? $this->getOrderById($orderId) : false;
+        if($this->getHummLogger()) {
+            $this->getHummLogger()->log('Requested order cancellation by customer. OrderId&QuoteId: ' . $order->getId() . $order->getQuoteId());
         }
-        $this->_redirect( 'checkout/cart' );
-    }
+        try {
+            $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => 'button']);
+            if($this->getHummLogger()) {
+                $this->getHummLogger()->log('humm_payment_cancel' . $orderId);
+            }
+            $this->getMessageManager()->addWarningMessage(__("You have canceled your humm payment. Please Check"));
+        } catch (\Exception $e) {
+            $this->getMessageManager()->addWarningMessage(__("canceled order error. Please click on orcer"));
 
+        }
+        $this->_redirect('humm/checkout/error');
+    }
 }
