@@ -48,25 +48,6 @@ class InitializationRequest implements BuilderInterface {
     private function validateQuote( OrderAdapter $order ) {
         if ( $this->_gatewayConfig->getTitle() == 'Oxipay' ) {
             $total = $order->getGrandTotalAmount();
-            if ( $total < 20 ) {
-                $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases less than $20." ) );
-
-                return false;
-            }
-
-            if ( $this->_gatewayConfig->getSpecificCountry() == 'AU' ) {
-                if ( $total > 2100 ) {
-                    $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases over $2100." ) );
-
-                    return false;
-                }
-            } else {
-                if ( $total > 1500 ) {
-                    $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases over $1500." ) );
-
-                    return false;
-                }
-            }
         }
 
         $allowedCountry = $this->_gatewayConfig->getSpecificCountry();
