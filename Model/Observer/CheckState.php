@@ -41,7 +41,7 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
             }
             $newState = \Magento\Sales\Model\Order::STATE_COMPLETE;
             $order->setState($newState)->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED);
-            $order->addStatusHistoryComment('This order is canceled by customer in cancel button of Hummpayment');
+            $order->addStatusHistoryComment('This order is cancelled by customer in cancel button of Hummpayment');
             $order->save();
         } catch (\Exception $e) {
             if($this->_hummLogger) {
