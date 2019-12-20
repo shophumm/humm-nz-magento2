@@ -27,7 +27,7 @@ define(
     ) {
         'use strict';
 
-        var self;
+        var self = this;
 
         return Component.extend({
             redirectAfterPlaceOrder: false,
@@ -53,14 +53,17 @@ define(
 
             afterPlaceOrder: function (x, event) {
                 console.log("redirect humm payment..")
+                self.isPlaceOrderActionAllowed(false);
                 self.messageContainer.clear();
-                self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment,please waiting..'});
+                self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment,please waiting...'});
                 if (event) {
                     event.preventDefault();
                 }
                 let hummControllerUrl = url.build('humm/checkout/index');
                 $.post(hummControllerUrl, 'json').done(function (response) {
                     formBuilder(response).submit();
+                    self.messageContainer.addSuccessMessage({'message': 'Please waiting ...,Avoid click button again'});
+
                 })
                     .fail(function (response) {
                         errorProcessor.process(response, this.messageContainer);
