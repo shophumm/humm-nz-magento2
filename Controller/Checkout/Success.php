@@ -49,6 +49,7 @@ class Success extends AbstractAction
         }
 
         if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
+
             $this->_redirect('checkout/onepage/success', array('_secure' => false));
 
             return;
@@ -88,6 +89,9 @@ class Success extends AbstractAction
                 $this->invoiceOrder($order, $transactionId);
             }
             $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
+            if ($this->getHummLogger()) {
+                $this->getHummLogger()->log("Humm returned successful for orderID: $orderId");
+            }
             $this->_redirect('checkout/onepage/success', array('_secure' => false));
         } else {
             $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => $result]);

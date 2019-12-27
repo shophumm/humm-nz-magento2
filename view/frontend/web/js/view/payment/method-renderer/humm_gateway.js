@@ -55,14 +55,14 @@ define(
                 console.log("redirect humm payment..")
                 self.isPlaceOrderActionAllowed(false);
                 self.messageContainer.clear();
-                self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment,please waiting...'});
+                self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment,please waiting & avoid click Place Order again'});
                 if (event) {
                     event.preventDefault();
                 }
                 let hummControllerUrl = url.build('humm/checkout/index');
                 $.post(hummControllerUrl, 'json').done(function (response) {
                     formBuilder(response).submit();
-                    self.messageContainer.addSuccessMessage({'message': 'Please waiting ...,Avoid click button again'});
+                    self.messageContainer.addSuccessMessage({'message': 'Please waiting & avoid click Place Order Button again'});
 
                 })
                     .fail(function (response) {

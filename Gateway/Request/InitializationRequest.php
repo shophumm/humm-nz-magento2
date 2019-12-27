@@ -46,7 +46,7 @@ class InitializationRequest implements BuilderInterface {
      * @return bool;
      */
     private function validateQuote( OrderAdapter $order ) {
-
+        
         $allowedCountry = $this->_gatewayConfig->getSpecificCountry();
 
         if ( $order->getBillingAddress()->getCountryId() != $allowedCountry ) {

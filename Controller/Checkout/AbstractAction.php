@@ -22,8 +22,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractAction extends Action
 {
-
-
+    
     const HUMM_DEFAULT_CURRENCY_CODE = 'AUD';
     const HUMM_DEFAULT_COUNTRY_CODE = 'AU';
     const HUMM_PAYMENT_ERRROUTE = "humm/checkout/error";

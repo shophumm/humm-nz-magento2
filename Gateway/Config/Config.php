@@ -220,7 +220,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function isActive()
     {
-        return (bool)$this->getValue(self::CONF_PREFIX . self::KEY_ACTIVE);
+        return (bool)$this->getValue( self::KEY_ACTIVE);
     }
 
     /**
@@ -271,10 +271,10 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @return mixed
      */
-    
-    public function getDebug() 
-    {    
-        return $this->getValue(self::CONF_PREFIX.self::KEY_HUNM_LOGGER);   
+
+    public function getDebug()
+    {
+        return $this->getValue(self::CONF_PREFIX.self::KEY_HUNM_LOGGER);
     }
 }
 

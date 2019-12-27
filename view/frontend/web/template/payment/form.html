@@ -38,10 +38,12 @@
                 <button class="action primary checkout"
                         data-bind="
                         click: placeOrder,
-                        attr: {title: $t('Place Order')}
+                        attr: {title: $t('Continue to Humm')},
+                        css: {disabled: !isPlaceOrderActionAllowed()},
+                        enable: (getCode() == isChecked())
                         "
                         type="submit">
-                    <span data-bind="i18n: 'Place Order'"></span>
+                    <span data-bind="i18n: 'Continue to Humm'"></span>
                 </button>
             </div>
         </div>
