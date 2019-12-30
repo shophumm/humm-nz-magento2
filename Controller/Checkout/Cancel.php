@@ -28,7 +28,10 @@ class Cancel extends AbstractAction
             }
             $this->getMessageManager()->addWarningMessage(__("You have cancelled your humm payment. Please Check"));
         } catch (\Exception $e) {
-            $this->getMessageManager()->addWarningMessage(__("cancelled order error. Please click on order"));
+            if($this->getHummLogger()) {
+                $this->getHummLogger()->log('humm_payment_cancel_error' . $orderId);
+            }
+            $this->getMessageManager()->addWarningMessage(__("Cancelled order error. Please Check Order"));
 
         }
         $this->_redirect('humm/checkout/error');

@@ -12,7 +12,7 @@
             <humm_gateway>
                 <model>HummPaymentGatewayFacade</model>
                 <title>humm</title>
-                <active>1</active> <!--Plugin disabled by default. The user must configure it first.-->
+                <active>0</active> <!--Plugin disabled by default. The user must configure it first.-->
                 <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <can_initialize>1</can_initialize> <!--Important: read Magento\Sales\Model\Order-->
                 <can_use_checkout>1</can_use_checkout>
@@ -43,16 +43,16 @@
                 </humm_conf>
                 <humm_advert>
                     <homepage>
-                        <banner>1</banner>
+                        <banner>0</banner>
                         <homepageurl></homepageurl>
                     </homepage>
                     <productpage>
-                        <banner>1</banner>
-                        <widget>1</widget>
+                        <banner>0</banner>
+                        <widget>0</widget>
                     </productpage>
                     <cartpage>
-                        <banner>1</banner>
-                        <widget>1</widget>
+                        <banner>0</banner>
+                        <widget>0</widget>
                     </cartpage>
                 </humm_advert>
             </humm_gateway>
