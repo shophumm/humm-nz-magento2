@@ -50,9 +50,24 @@ define(
                     'method': this.item.method
                 };
             },
+            disableButton: function () {
+                // stop any previous shown loaders
+                fullScreenLoader.stopLoader(true);
+                fullScreenLoader.startLoader();
+                $('[data-button="place"]').attr('disabled', 'disabled');
+            },
 
-            afterPlaceOrder: function (x, event) {
-                console.log("redirect humm payment..")
+            /**
+             * Enable submit button
+             */
+            enableButton: function () {
+                $('[data-button="place"]').removeAttr('disabled');
+                fullScreenLoader.stopLoader();
+            },
+
+            afterPlaceOrder: function (event) {
+                console.log("redirect humm payment..");
+                this.disableButton();
                 self.isPlaceOrderActionAllowed(false);
                 self.messageContainer.clear();
                 self.messageContainer.addSuccessMessage({'message': 'Redirect the Humm Payment'});
@@ -62,9 +77,13 @@ define(
                 let hummControllerUrl = url.build('humm/checkout/index');
                 $.post(hummControllerUrl, 'json').done(function (response) {
                     self.messageContainer.addSuccessMessage({'message': 'Prepare Humm Payment.'});
-                    formBuilder(response).submit();
-                    self.messageContainer.addSuccessMessage({'message': 'Redirect Humm Payment,do not close Browser until transaction finish'});
 
+                    fullScreenLoader.stopLoader(true);
+                    fullScreenLoader.startLoader();
+                    $('[data-button="place"]').attr('disabled', 'disabled');
+                    self.messageContainer.addSuccessMessage({'message': 'Redirect Humm Payment,do not close browser until transaction finish'});
+
+                    formBuilder(response).submit();
                 })
                     .fail(function (response) {
                         errorProcessor.process(response, this.messageContainer);
