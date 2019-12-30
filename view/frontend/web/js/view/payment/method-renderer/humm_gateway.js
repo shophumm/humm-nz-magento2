@@ -76,7 +76,7 @@ define(
                 }
                 let hummControllerUrl = url.build('humm/checkout/index');
                 $.post(hummControllerUrl, 'json').done(function (response) {
-                    self.messageContainer.addSuccessMessage({'message': 'Prepare Humm Payment.'});
+                    self.messageContainer.addSuccessMessage({'message': 'Processing...do not close browser'});
                     fullScreenLoader.stopLoader(true);
                     fullScreenLoader.startLoader();
                     $('[data-button="place"]').attr('disabled', 'disabled');
