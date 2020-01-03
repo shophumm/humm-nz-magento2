@@ -3,12 +3,15 @@
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
 use Magento\Sales\Model\Order;
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
 
 /**
  * roger.bi@flexigroup.cpm.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
  */
-class Success extends AbstractAction
+class Success extends AbstractAction implements CsrfAwareActionInterface
 {
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
@@ -102,6 +105,23 @@ class Success extends AbstractAction
             $this->getMessageManager()->addErrorMessage(__("There was an error in the humm payment"));
             $this->_redirect('checkout/cart', array('_secure' => false));
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createCsrfValidationException(
+        RequestInterface $request
+    ): ?InvalidRequestException {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 
     /**
