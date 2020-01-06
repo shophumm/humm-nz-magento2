@@ -39,3 +39,94 @@ Login to the  administration interface and go to:
 If you would like assistance with the installation of the plugin or you need an API key, please contact the **humm** Platform Integration Team pit@shophumm.com.au
 
 Please see https://docs.shophumm.com.au for information on how to use this plugin. 
+
+
+
+New Version Release 202001 By Roger&Michael
+
+
+New functions 
+
+
+
+    1. New configuration admin and UI
+
+
+
+    2. System Configrations easily are setup in the admin console then they work well in front end of store 
+
+  
+
+    3. Six banners and widgets are shown automatically in different pages ,so first plugin with automation to best integration performance 
+
+
+
+    4. Banners and widgets can be customised with specific clients requirements
+
+
+
+    5. Add a few pages for better UI to clients 
+
+ 
+
+    6. Add a Sever to Server Callback Post funtion
+
+
+
+    7. An separated payment Log file 
+
+
+
+    8. Unit test sections 
+
+
+
+   
+
+Rebuild funtions
+
+
+
+    1. API post call 
+
+
+
+    2. Abandon Cart issues 
+
+
+
+    3. Error control & Formative error messages
+
+     
+
+     4. Remove unnessary hardcode and changed to setup in the admin configure UI
+
+
+
+     5. Rebuild configure default paramerters 
+
+
+
+
+
+ 
+
+Software Design Patterns Addition
+
+
+
+     1. Event/Observer  
+
+    
+
+     2. All of code match  PHP standard & PHP Doc
+
+
+
+     3. Widgets & Banner templates
+
+
+
+     4. Dependency Injections for better M2 development 
+
+
