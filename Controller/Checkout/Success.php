@@ -19,14 +19,20 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
      */
     public function execute()
     {
+        $isAsyncCallback = $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
+        $params = $this->getRequest()->getParams();
+
+        if ($this->getHummLogger()) {
+            $this->getHummLogger()->log('Identify CallBack.'.$isAsyncCallback.'|server:'.json_encode($this->getRequest()->getParams()));
+        }
         $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
-        $result = $this->getRequest()->get("x_result");
-        $orderId = $this->getRequest()->get("x_reference");
-        $transactionId = $this->getRequest()->get("x_gateway_reference");
+        $result = $params['x_result'] ;
+        $orderId =$params['x_reference'];
+        $transactionId = $params['x_gateway_reference'];
 
         if (!$isValid) {
             if ($this->getHummLogger()) {
-                $this->getHummLogger()->log('Possible site forgery detected: invalid response signature.');
+                $this->getHummLogger()->log('Possible site forgery detected: invalid response signature.'.$transactionId);
             }
             $this->_redirect('humm/checkout/error');
             return;
