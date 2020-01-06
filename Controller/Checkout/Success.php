@@ -29,6 +29,9 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         $result = $params['x_result'] ;
         $orderId =$params['x_reference'];
         $transactionId = $params['x_gateway_reference'];
+        if ($this->getHummLogger()) {
+            $this->getHummLogger()->log('Identify CallBack [transactionID]'.$transactionId."[result]".$result.'[orderID]'.$orderId);
+        }
 
         if (!$isValid) {
             if ($this->getHummLogger()) {
