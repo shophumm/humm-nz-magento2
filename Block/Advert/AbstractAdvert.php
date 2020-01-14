@@ -95,8 +95,8 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Check if widget has been enabled
-     *
+     * @param $widget
+     * @param $page
      * @return bool
      */
     protected function _configShow($widget, $page)

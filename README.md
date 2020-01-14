@@ -61,7 +61,7 @@ New functions
 
 
 
-    4. Banners and widgets can be customised with specific clients requirements
+    4. Banners and widgets can be customised with specific clients' requirements
 
 
 

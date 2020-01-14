@@ -17,7 +17,7 @@ class SimplePathAdmin extends \Magento\Framework\View\Element\Template
     /**
      * SimplePathAdmin constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param Config $simplePath
+     * @param Config $config
      * @param array $data
      */
 
