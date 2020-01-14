@@ -66,7 +66,7 @@ define(
             },
 
             afterPlaceOrder: function (event) {
-                console.log("redirect humm payment..");
+                console.log("Redirect humm payment..");
                 this.disableButton();
                 self.isPlaceOrderActionAllowed(false);
                 self.messageContainer.clear();
@@ -76,7 +76,7 @@ define(
                 }
                 let hummControllerUrl = url.build('humm/checkout/index');
                 $.post(hummControllerUrl, 'json').done(function (response) {
-                    self.messageContainer.addSuccessMessage({'message': 'Processing...do not close browser'});
+                    self.messageContainer.addSuccessMessage({'message': 'Redirecting to humm...'});
                     fullScreenLoader.stopLoader(true);
                     fullScreenLoader.startLoader();
                     $('[data-button="place"]').attr('disabled', 'disabled');

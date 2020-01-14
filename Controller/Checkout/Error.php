@@ -14,12 +14,12 @@ class Error extends AbstractAction
     public function execute()
     {
         if($this->getHummLogger()) {
-            $this->getHummLogger()->log("Error & Cancel  Action...");
+            $this->getHummLogger()->log("Error & Cancel Action...");
         }
 
         try {
             $page_object = $this->_pageFactory->create();
-            $message = __('An error occurred & cancel happen.');
+            $message = __('An error occurred. Order cancelled happen.');
         } catch (\Exception $e) {
             $this->getMessageManager()->addError($this->_helper->__('An error occurred while redirecting to error page.'));
         }

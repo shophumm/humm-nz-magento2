@@ -30,7 +30,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const KEY_LAUNCH_TIME = 'launch_time';
     const KEY_LAUNCH_TIME_UPDATED = 'launch_time_updated';
     const KEY_MIN_ORDER_TOTAL = 'min_order_total';
-    const KEY_HUNM_LOGGER = 'humm_logger';
+    const KEY_HUMM_LOGGER = 'humm_logger';
 
     const KEY_LITTLE_BIG = 'little_big';
 
@@ -274,7 +274,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     public function getDebug()
     {
-        return $this->getValue(self::CONF_PREFIX.self::KEY_HUNM_LOGGER);
+        return $this->getValue(self::CONF_PREFIX.self::KEY_HUMM_LOGGER);
     }
 }
 

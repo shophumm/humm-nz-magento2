@@ -75,7 +75,7 @@ class Error extends Template
             }
             switch ($code) {
                 case 200:
-                    $text = __('work normal');
+                    $text = __('200 OK');
                     break;
                 case 400:
                     $text = __('400 Bad Request');
@@ -113,7 +113,7 @@ class Error extends Template
         $text = $this->_config->getValue(self::ERROR_HEADER);
 
         if (!$text) {
-            $text = "An error occurred";
+            $text = "Humm Payment";
         }
 
         $this->pageConfig->getTitle()->set(__($text));
