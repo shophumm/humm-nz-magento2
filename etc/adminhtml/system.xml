@@ -8,7 +8,7 @@
                 <label>
                     <![CDATA[<div class="humm-payment-logo">
                              </div>
-                    <div class="humm-payment-byline">The convenient, trusted way to pay.<br/>Humm Payment </div>
+                    <div class="humm-payment-byline">Little things. Big things. Interest freeee!<br/>Humm Payment</div>
                     ]]></label>
                 <fieldset_css>complex humm-payment-section</fieldset_css>
                 <frontend_model>Humm\HummPaymentGateway\Block\System\Config\Adminhtml\Fieldset\Payment</frontend_model>
@@ -23,7 +23,7 @@
                 </field>
                 <group id="humm_conf" translate="label" type="text" sortOrder="10" showInDefault="2" showInWebsite="1"
                        showInStore="1">
-                    <label>Humm Payment Configration</label>
+                    <label>Humm Payment Configuration</label>
 
                     <field id="merchant_number" translate="label" type="text" sortOrder="50" showInDefault="1"
                            showInWebsite="1" showInStore="0">
@@ -46,21 +46,21 @@
                         <label>Force humm</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <tooltip>You will switch to humm if this is set to 'yes' and the store is in Australia.
-                            Otherwise you will be automatically switched over on the official humm launch date
+                            Otherwise you will be automatically switched over on the official humm launch date.
                         </tooltip>
                     </field>
                     <field id="gateway_url" translate="label" type="text" sortOrder="70" showInDefault="1"
                            showInWebsite="1" showInStore="0">
-                        <label>Humm Gateway URL (Leave empty if not sure)</label>
+                        <label>Humm Gateway URL (leave empty if not sure)</label>
                     </field>
                     <field id="specificcountry" translate="label" type="select" sortOrder="90" showInDefault="1"
                            showInWebsite="1" showInStore="0">
-                        <label>Payment from Specific Country</label>
+                        <label>Country</label>
                         <source_model>Humm\HummPaymentGateway\Model\Config\Source\RestrictedCountry</source_model>
                     </field>
                     <field id="humm_approved_order_status" translate="label" type="select" sortOrder="100"
                            showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Status for humm Approved Orders</label>
+                        <label>Status for Approved humm Orders</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <tooltip>Select ‘Humm Processed’ if you want to easily locate all Humm transactions in the
                             Orders page.
@@ -80,19 +80,19 @@
                     </field>
                     <field id="humm_logger" translate="label" type="select" sortOrder="130" showInDefault="1"
                            showInWebsite="1" showInStore="0">
-                        <label>Humm Payment Log </label>
+                        <label>Humm Payment Log</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
-                    <field id="min_order_total" translate="label" type="text" sortOrder="4" showInDefault="1"
+                    <field id="min_order_total" translate="label" type="text" sortOrder="140" showInDefault="1"
                            showInWebsite="1" showInStore="0">
-                        <label>Minimum Order Value</label>
+                        <label>Minimum Order Amount</label>
                     </field>
-                    <field id="little_big" translate="label" type="text" sortOrder="3" showInDefault="1"
+                    <field id="little_big" translate="label" type="text" sortOrder="150" showInDefault="1"
                            showInWebsite="1" showInStore="0">
-                        <label>little Big Indentify Value</label>
+                        <label>Little Things Limit</label>
                         <frontend_class>validate-number</frontend_class>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1"
+                    <field id="sort_order" translate="label" type="text" sortOrder="160" showInDefault="1"
                            showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
@@ -100,7 +100,7 @@
                 </group>
                 <group id="humm_advert" translate="label" type="text" sortOrder="20" showInDefault="2" showInWebsite="1"
                        showInStore="1">
-                    <label>Marketing Banners Widgets</label>
+                    <label>Marketing Banner Widgets</label>
                     <group id="homepage" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
                            showInStore="1">
                         <label>Home Page</label>

@@ -86,7 +86,7 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
 
         if (empty($payment) || empty($payment->getData('creditmemo'))) {
             throw new LocalizedException(
-                __('We can\'t issue a refund transaction because there is no capture transaction.')
+                __('Cannot issue refund as there is no transaction capture .')
             );
         }
 

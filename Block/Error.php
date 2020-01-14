@@ -75,7 +75,7 @@ class Error extends Template
             }
             switch ($code) {
                 case 200:
-                    $text = __('work normal');
+                    $text = __('200 OK');
                     break;
                 case 400:
                     $text = __('400 Bad Request');
