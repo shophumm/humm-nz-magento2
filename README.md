@@ -2,7 +2,7 @@
 
 The following instructions detail how to install the **humm** payment gateway on the Magento 2 platform.
 
-This assumes that you have signed the required Merchant Agreement and have been provided a Merchant Id and API Key.
+This assumes that you have signed the required Merchant Agreement and have been provided a Merchant ID and API Key.
 
 ## Install using Composer 
 
@@ -53,7 +53,7 @@ New functions
 
 
 
-    2. System Configrations easily are setup in the admin console then they work well in front end of store 
+    2. System Configurations easily are setup in the admin console then they work well in front end of store 
 
   
 
@@ -69,7 +69,7 @@ New functions
 
  
 
-    6. Add a Sever to Server Callback Post funtion
+    6. Add a Sever to Server Callback Post function
 
 
 
@@ -83,7 +83,7 @@ New functions
 
    
 
-Rebuild funtions
+Rebuild functions
 
 
 
@@ -99,11 +99,11 @@ Rebuild funtions
 
      
 
-     4. Remove unnessary hardcode and changed to setup in the admin configure UI
+     4. Remove unnecessary hardcode and changed to setup in the admin configure UI
 
 
 
-     5. Rebuild configure default paramerters 
+     5. Rebuild configure default parameters 
 
 
 
