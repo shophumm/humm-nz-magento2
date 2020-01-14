@@ -31,12 +31,10 @@ class Checkout {
     }
 
     /**
-     * Cancel last placed order with specified comment message
-     *
-     * @param string $comment Comment appended to order history
-     *
+     * @param $comment
+     * @return bool
+     * @throws \Exception
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @return bool True if order cancelled, false otherwise
      */
     public function cancelCurrentOrder( $comment ) {
         $order = $this->session->getLastRealOrder();

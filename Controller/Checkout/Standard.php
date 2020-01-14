@@ -12,7 +12,9 @@ class standard extends AbstractAction
 {
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute()
     {
@@ -35,7 +37,7 @@ class standard extends AbstractAction
     }
 
     /**
-     * @param $order
+     * @param $quote
      * @return array
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */

@@ -15,6 +15,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 {
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @throws \Exception
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute()
