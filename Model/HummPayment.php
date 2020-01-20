@@ -5,6 +5,7 @@ namespace Humm\HummPaymentGateway\Model;
 use Humm\HummPaymentGateway\Helper\Crypto;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Humm\HummPaymentGateway\Helper\HummLogger;
 
 /**
  * Class HummPayment
@@ -31,9 +32,12 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
     /**
      * @var bool
      */
-    public $_canCapture = true;
-    public $_canCapturePartial = true;
-    public $_scopeConfig;
+    public  $_canCapture = true;
+    public  $_canCapturePartial = true;
+    public  $_scopeConfig;
+    public  $_cryptoHumm;
+    private $_hummlogger;
+    private $_encrypted;
 
     /**
      * HummPayment constructor.
@@ -44,6 +48,7 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
      * @param \Magento\Payment\Helper\Data $paymentData
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Payment\Model\Method\Logger $logger
+     * @param HummLogger $hummlogger
      */
 
     public function __construct(
@@ -53,7 +58,9 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
         \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory,
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Payment\Model\Method\Logger $logger
+        \Magento\Payment\Model\Method\Logger $logger,
+        \Humm\HummPaymentGateway\Helper\HummLogger $hummlogger,
+        \Magento\Config\Model\Config\Backend\Encrypted $encrypted
     )
     {
         parent::__construct(
@@ -66,6 +73,8 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
             $logger
         );
         $this->_scopeConfig = $scopeConfig;
+        $this->_hummlogger = $hummlogger;
+        $this->_encrypted  = $encrypted;
     }
 
     /**
@@ -79,8 +88,9 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
     {
         $refund_url = $response['GATEWAY_REFUND_GATEWAY_URL'];
         $merchant_number = $response['GATEWAY_MERCHANT_ID'];
-        $apiKey = $response['GATEWAY_API_KEY'];
+        $apiKeyEnc = $response['GATEWAY_API_KEY'];
 
+        $apiKey = $this->_encrypted->processValue($apiKeyEnc);
         $refund_amount = $handlingSubject['amount'];
         $payment = $handlingSubject['payment']->getPayment();
 
@@ -102,7 +112,7 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
         $refund_details['signature'] = $refund_signature;
 
         $json = json_encode($refund_details);
-
+        $this->_hummlogger->log($json.'send-json');
         $curl = curl_init($refund_url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
@@ -119,7 +129,7 @@ class HummPayment extends \Magento\Payment\Model\Method\AbstractMethod implement
         $parsed_header = ($this->parseHeaders($header_rows_trimmed));
 
         curl_close($curl);
-
+        $this->_hummlogger->log($response."response-back");
         if ($parsed_header['response_code'] == '204') {
             return $this;
         } elseif ($parsed_header['response_code'] == '401') {
