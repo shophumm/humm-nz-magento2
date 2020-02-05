@@ -2,6 +2,7 @@
 
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
@@ -15,8 +16,6 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 {
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
-     * @throws \Exception
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute()
     {
@@ -24,19 +23,19 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         $params = $this->getRequest()->getParams();
 
         if ($this->getHummLogger()) {
-            $this->getHummLogger()->log('Identify CallBack.'.$isAsyncCallback.'|server:'.json_encode($this->getRequest()->getParams()));
+            $this->getHummLogger()->log('Identify CallBack.' . $isAsyncCallback . '|server:' . json_encode($this->getRequest()->getParams()));
         }
         $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
-        $result = $params['x_result'] ;
-        $orderId =$params['x_reference'];
+        $result = $params['x_result'];
+        $orderId = $params['x_reference'];
         $transactionId = $params['x_gateway_reference'];
         if ($this->getHummLogger()) {
-            $this->getHummLogger()->log('Identify CallBack [transactionID]'.$transactionId."[result]".$result.'[orderID]'.$orderId);
+            $this->getHummLogger()->log('Identify CallBack [transactionID]' . $transactionId . "[result]" . $result . '[orderID]' . $orderId);
         }
 
         if (!$isValid) {
             if ($this->getHummLogger()) {
-                $this->getHummLogger()->log('Possible site forgery detected: invalid response signature.'.$transactionId);
+                $this->getHummLogger()->log('Possible site forgery detected: invalid response signature.' . $transactionId);
             }
             $this->_redirect('humm/checkout/error');
             return;
@@ -76,34 +75,41 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         if ($result == "completed") {
             $orderState = Order::STATE_PROCESSING;
 
-            $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
-            if (!$this->statusExists($orderStatus)) {
-                $orderStatus = $order->getConfig()->getStateDefaultStatus($orderState);
-            }
-
-            $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
-
-            $order->setState($orderState)
-                ->setStatus($orderStatus)
-                ->addStatusHistoryComment("Humm authorisation success. Transaction #$transactionId")
-                ->setIsCustomerNotified($emailCustomer);
-
-            $payment = $order->getPayment();
-            $payment->setTransactionId($transactionId);
-            $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
-            $order->save();
-
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
-            $emailSender->send($order);
-
-            $invoiceAutomatically = $this->getGatewayConfig()->isAutomaticInvoice();
-            if ($invoiceAutomatically) {
-                $this->invoiceOrder($order, $transactionId);
-            }
-            $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
-            if ($this->getHummLogger()) {
-                $this->getHummLogger()->log("Humm returned successful for orderID: $orderId");
+            try {
+                $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
+                if (!$this->statusExists($orderStatus)) {
+                    $orderStatus = $order->getConfig()->getStateDefaultStatus($orderState);
+                }
+                $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
+                if ($this->getHummLogger()) {
+                    $this->getHummLogger()->log("after successful state ==" . $orderState . "|" . $orderStatus);
+                }
+                $order->setState($orderState)
+                    ->setStatus($orderStatus)
+                    ->addStatusHistoryComment("Humm authorisation success. Transaction #$transactionId")
+                    ->setIsCustomerNotified($emailCustomer);
+                $payment = $order->getPayment();
+                $payment->setTransactionId($transactionId);
+                $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
+                $order->save();
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
+                $emailSender->send($order);
+                $invoiceAutomatically = $this->getGatewayConfig()->isAutomaticInvoice();
+                if ($invoiceAutomatically) {
+                    $this->invoiceOrder($order, $transactionId);
+                    if ($this->getHummLogger()) {
+                        $this->getHummLogger()->log("Humm invoice produced:" . $orderId);
+                    }
+                }
+                if ($this->getHummLogger()) {
+                    $this->getHummLogger()->log("Humm returned successful for orderID:" . $orderId);
+                }
+                $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
+            } catch (\Exception $e) {
+                if ($this->getHummLogger()) {
+                    $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
+                }
             }
             $this->_redirect('checkout/onepage/success', array('_secure' => false));
         } else {
@@ -122,7 +128,8 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
      */
     public function createCsrfValidationException(
         RequestInterface $request
-    ): ?InvalidRequestException {
+    ): ?InvalidRequestException
+    {
         return null;
     }
 
