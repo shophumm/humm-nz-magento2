@@ -81,16 +81,18 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 }
                 $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
                 if ($this->getHummLogger()) {
-                    $this->getHummLogger()->log("after successful state ==" . $orderState . "|" . $orderStatus);
+                    $this->getHummLogger()->log("callback successful: state ==" . $orderState . "|" . $orderStatus);
                 }
                 $order->setState($orderState)
                     ->setStatus($orderStatus)
                     ->addStatusHistoryComment("Humm authorisation success. Transaction #$transactionId")
                     ->setIsCustomerNotified($emailCustomer);
+
                 $payment = $order->getPayment();
                 $payment->setTransactionId($transactionId);
                 $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
                 $order->save();
+                $this->logContent("After update state&status".$order->getState()."|".$order->getStatus());
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
                 $emailSender->send($order);
