@@ -1,4 +1,5 @@
 <?php
+
 namespace Humm\HummPaymentGateway\Helper;
 
 Use \Magento\Framework\App\Helper\AbstractHelper;
@@ -26,8 +27,8 @@ class  HummLogger extends AbstractHelper
      */
     public function __construct(Context $context,
                                 \Magento\Framework\Logger\Monolog $hummPaymentLogger,
-                               \Magento\Framework\Module\ModuleListInterface $moduleList
-      )
+                                \Magento\Framework\Module\ModuleListInterface $moduleList
+    )
     {
 
         $this->_hummPaymentLog = $hummPaymentLogger;
@@ -40,14 +41,12 @@ class  HummLogger extends AbstractHelper
      * @param bool $useSeparator
      */
 
-    public function log($message,$useSeparator = false) {
+    public function log($message, $useSeparator = false)
+    {
 
-        if ($useSeparator) {
-
-            $this->_hummPaymentLog->addDebug(str_repeat('=',100));
-        }
-        $this->_hummPaymentLog->addDebug($message);
+            if ($useSeparator) {
+                $this->_hummPaymentLog->addDebug(str_repeat('=', 100));
+            }
+            $this->_hummPaymentLog->addDebug($message);
     }
-
-
 }

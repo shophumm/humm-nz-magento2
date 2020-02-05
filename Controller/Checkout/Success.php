@@ -74,7 +74,6 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 
         if ($result == "completed") {
             $orderState = Order::STATE_PROCESSING;
-
             try {
                 $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
                 if (!$this->statusExists($orderStatus)) {
@@ -192,4 +191,14 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         $transaction->save();
     }
 
+    /**
+     * @param $content
+     */
+
+    public function logContent($content) {
+
+        if ($this->getHummLogger()) {
+            $this->getHummLogger()->log("Trace Content:" . $content);
+        }
+    }
 }
