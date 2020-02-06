@@ -2,7 +2,6 @@
 
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;

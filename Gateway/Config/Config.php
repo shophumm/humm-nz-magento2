@@ -81,11 +81,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getTitle()
     {
         $is_after = (time() - $this->getLaunchTime() >= 0);
-        if ($this->getValue('force_humm')) {
-            $is_after = true;
-        }
-        $title = ($is_after && $this->getSpecificCountry() == 'AU') ? 'Humm' : 'Oxipay';
 
+        if ($this->getSpecificCountry() == 'NZ') {
+            $title = $is_after ? 'Humm' : 'Oxipay';
+        } else if ($this->getSpecificCountry() == 'AU') {
+            $title = 'Humm';
+        }
         return $title;
     }
 
@@ -220,7 +221,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function isActive()
     {
-        return (bool)$this->getValue( self::KEY_ACTIVE);
+        return (bool)$this->getValue(self::KEY_ACTIVE);
     }
 
     /**
@@ -274,7 +275,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     public function getDebug()
     {
-        return $this->getValue(self::CONF_PREFIX.self::KEY_HUMM_LOGGER);
+        return $this->getValue(self::CONF_PREFIX . self::KEY_HUMM_LOGGER);
     }
 }
 
