@@ -7,6 +7,7 @@
 namespace Humm\HummPaymentGateway\Model\Ui;
 
 use Humm\HummPaymentGateway\Gateway\Config\Config;
+use Humm\HummPaymentGateway\Helper\HummLogger;
 use Magento\Backend\Model\Session\Quote;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Customer\Model\Session;
@@ -22,8 +23,8 @@ final class ConfigProvider implements ConfigProviderInterface
 {
 
     const LAUNCH_TIME_URL = 'https://s3-ap-southeast-2.amazonaws.com/humm-variables/launch-time.txt';
-    const LAUNCH_TIME_DEFAULT = "2019-04-07 14:30:00 UTC";
-    const LAUNCH_TIME_CHECK_ENDS = "2019-10-07 13:30:00 UTC";
+    const LAUNCH_TIME_DEFAULT = "2020-05-01 00:00:00 UTC";
+    const LAUNCH_TIME_CHECK_ENDS = "2020-05-01 00:00:00 UTC";
 
     protected $_gatewayConfig;
     protected $_scopeConfigInterface;
@@ -32,6 +33,7 @@ final class ConfigProvider implements ConfigProviderInterface
     protected $request;
     protected $_assetRepo;
     protected $_resourceConfig;
+    protected $_logger;
 
     /**
      * ConfigProvider constructor.
@@ -41,6 +43,7 @@ final class ConfigProvider implements ConfigProviderInterface
      * @param Context $context
      * @param Repository $assetRepo
      * @param \Magento\Config\Model\ResourceModel\Config $resourceConfig
+     * @param HummLogger $hummlogger
      */
 
     public function __construct(
@@ -49,8 +52,9 @@ final class ConfigProvider implements ConfigProviderInterface
         Quote $sessionQuote,
         Context $context,
         Repository $assetRepo,
-        \Magento\Config\Model\ResourceModel\Config $resourceConfig
-    )
+        \Magento\Config\Model\ResourceModel\Config $resourceConfig,
+        HummLogger $hummlogger)
+
     {
         $this->_gatewayConfig = $gatewayConfig;
         $this->_scopeConfigInterface = $context->getScopeConfig();
@@ -59,6 +63,7 @@ final class ConfigProvider implements ConfigProviderInterface
         $this->_urlBuilder = $context->getUrlBuilder();
         $this->_assetRepo = $assetRepo;
         $this->_resourceConfig = $resourceConfig;
+        $this->_logger = $hummlogger;
     }
 
     /**
@@ -96,19 +101,18 @@ final class ConfigProvider implements ConfigProviderInterface
     /**
      *
      */
-
     private function updateLaunchDate()
     {
+        $this->_logger->log("Get Real time" . time());
         if (time() - strtotime(self::LAUNCH_TIME_CHECK_ENDS) > 0) {
             if (!$this->_gatewayConfig->getLaunchTime()) {
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time', strtotime(self::LAUNCH_TIME_DEFAULT), 'default', 0);
             }
-
             return;
         }
         $launch_time = $this->_gatewayConfig->getLaunchTime();
         $launch_time_update_time = $this->_gatewayConfig->getLaunchTimeUpdated();
-        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 3600)) {
+        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 1440)) {
             $remote_launch_time_string = '';
             try {
                 $remote_launch_time_string = file_get_contents(self::LAUNCH_TIME_URL);
@@ -116,6 +120,7 @@ final class ConfigProvider implements ConfigProviderInterface
             }
             if (!empty($remote_launch_time_string)) {
                 $launch_time = strtotime($remote_launch_time_string);
+                $this->_logger->log($launch_time . "check..." .time() .$remote_launch_time_string);
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time', $launch_time, 'default', 0);
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time_updated', time(), 'default', 0);
             } elseif (empty($launch_time) || (empty($launch_time_update_time) && $launch_time != strtotime(self::LAUNCH_TIME_DEFAULT))) {
