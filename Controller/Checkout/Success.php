@@ -6,7 +6,6 @@ use Magento\Sales\Model\Order;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
-
 /**
  * roger.bi@flexigroup.cpm.au
  * @package Humm\HummPaymentGateway\Controller\Checkout

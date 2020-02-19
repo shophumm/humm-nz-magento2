@@ -121,6 +121,13 @@
     <type name="\Magento\Sales\Model\Order\Email\Sender\OrderSender">
         <plugin name="Humm-OrderSender-Plugin" type="Humm\HummPaymentGateway\Plugin\OrderSenderPlugin"/>
     </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="sales_order_grid_data_source" xsi:type="string">Humm\HummPaymentGateway\Model\ResourceModel\Order\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
 
 
     <virtualType name="HummLogger" type="Magento\Framework\Logger\Monolog">
