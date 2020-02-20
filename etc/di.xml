@@ -151,4 +151,9 @@
                 type="Humm\HummPaymentGateway\Plugin\HummPayment"/>
     </type>
 
+
+    <type name="Humm\HummPaymentGateway\Controller\Checkout\Success">
+        <plugin name="Humm_HummPaymentGateway_Plugin" type="Humm\HummPaymentGateway\Plugin\Redicall" sortOrder="10" disabled="false"  />
+    </type>
+
 </config>

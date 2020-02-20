@@ -128,4 +128,18 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
 
     }
 
+    /**
+     * @return mixed
+     */
+    public function _getCartTotal()
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $cart = $objectManager->get('\Magento\Checkout\Model\Cart');
+
+        $subTotal = $cart->getQuote()->getSubtotal();
+        $grandTotal = $cart->getQuote()->getGrandTotal();
+
+        return $grandTotal;
+    }
+
 }
