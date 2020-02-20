@@ -34,7 +34,6 @@ define(
 
             defaults: {
                 template: 'Humm_HummPaymentGateway/payment/form',
-                paymentMethodNonce: 'before-humm',
             },
 
             initialize: function () {
@@ -48,10 +47,7 @@ define(
 
             getData: function () {
                 return {
-                    'method': this.item.method,
-                    'additional_data': {
-                        'payment_method_nonce': this.paymentMethodNonce
-                    }
+                    'method': this.item.method
                 };
             },
             disableButton: function () {
@@ -68,20 +64,9 @@ define(
                 $('[data-button="place"]').removeAttr('disabled');
                 fullScreenLoader.stopLoader();
             },
-            /**
-             *
-             * @param data
-             */
-            beforePlaceOrder: function (data) {
-                debugger;
-                console.log("before order log%j",data);
-                this.setPaymentMethodNonce(data.nonce);
-                this.placeOrder();
-            },
 
             afterPlaceOrder: function (event) {
                 console.log("Redirect humm payment..");
-                debugger;
                 this.disableButton();
                 self.isPlaceOrderActionAllowed(false);
                 self.messageContainer.clear();

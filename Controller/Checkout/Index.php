@@ -93,7 +93,8 @@ class Index extends AbstractAction
             'x_customer_shipping_state' => $shippingAddress->getData('region'),
             'x_customer_shipping_zip' => $shippingAddress->getData('postcode'),
             'version_info' => 'Humm_' . $plugin_version . '_on_magento' . substr($magento_version, 0, 3),
-            'x_test' => 'false'
+            'x_test' => 'false',
+            'x_transaction_timeout' => ($this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout')<1440) ? $this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout'):1440,
         );
 
         foreach ($data as $key => $value) {
