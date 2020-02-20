@@ -145,4 +145,10 @@
         </arguments>
     </type>
 
+
+    <type name="Magento\Quote\Model\Quote\Payment">
+        <plugin sortOrder="1" name="set_extra_data"
+                type="Humm\HummPaymentGateway\Plugin\HummPayment"/>
+    </type>
+
 </config>

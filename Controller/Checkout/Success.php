@@ -89,6 +89,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 $payment = $order->getPayment();
                 $payment->setTransactionId($transactionId);
                 $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
+                $payment->setAdditionalInformation(array("HummPayment".$result =>"done"));;
                 $order->save();
                 $this->logContent("After update state&status".$order->getState()."|".$order->getStatus());
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();

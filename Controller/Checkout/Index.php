@@ -40,6 +40,7 @@ class Index extends AbstractAction
         if($this->getHummLogger()) {
             $this->getHummLogger()->log("payload--" . json_encode($payload));
         }
+
         return $result->setData($payload);
     }
 
@@ -106,6 +107,10 @@ class Index extends AbstractAction
         if($this->getHummLogger()) {
             $this->getHummLogger()->log('send-data--:' . json_encode($data));
         }
+        $payment =  $order->getPayment()
+            ->setAdditionalInformation(array("Humm Payment Pending"=>"done"));;
+        $order->save();
+        $this->getHummLogger()->log("setAdditional fine:");
         return $data;
     }
 }
