@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Humm_HummPaymentGateway::Menu" title="Humm HummPayment" sortOrder="51">
+                    <resource id="Humm_HummPaymentGateway::Order" title="Humm Order"  sortOrder="10">
+                    </resource>
+                    <resource id="Humm_HummPaymentGateway::OrderHistory" title="Humm Order History"  sortOrder="10">
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

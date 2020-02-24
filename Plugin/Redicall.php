@@ -1,16 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dev-mac
- * Date: 20/2/20
- * Time: 4:12 PM
- */
-
 namespace Humm\HummPaymentGateway\Plugin;
 use Humm\HummPaymentGateway\Helper\HummLogger;
 use Humm\HummPaymentGateway\Controller\Checkout\Index;
 
 
+/**
+ * Class Redicall
+ * @package Humm\HummPaymentGateway\Plugin
+ */
 class Redicall
 {
     public $logger;
@@ -21,6 +18,7 @@ class Redicall
     public function afterStatusExists(\Humm\HummPaymentGateway\Controller\Checkout\Success $subject, $result)
     {
 
+        $this->logger->debug("hhhhhh");
         $this->logger->debug(json_encode($result));
         $this->logger->debug(json_encode($subject));
 
