@@ -19,16 +19,12 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
     {
         $isAsyncCallback = $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
         $params = $this->getRequest()->getParams();
-
-        if ($this->getHummLogger()) {
-            $this->getHummLogger()->log('Identify CallBack.' . $isAsyncCallback . '|server:' . json_encode($this->getRequest()->getParams()));
-        }
         $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
         $result = $params['x_result'];
         $orderId = $params['x_reference'];
         $transactionId = $params['x_gateway_reference'];
         if ($this->getHummLogger()) {
-            $this->getHummLogger()->log('Identify CallBack [transactionID]' . $transactionId . "[result]" . $result . '[orderID]' . $orderId);
+            $this->getHummLogger()->log(sprintf("[Response---:%s] [method = %s]", json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         }
 
         if (!$isValid) {

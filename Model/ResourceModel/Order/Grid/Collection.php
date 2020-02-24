@@ -23,7 +23,9 @@ class Collection extends OriginalCollection
         $joinTable = $this->getTable('sales_order_payment');
         $joinSales= $this->getTable('sales_order');
         $this->getSelect()->joinLeft($joinTable, 'main_table.parent_id = sales_order_payment.entity_id', ['additional_information','amount_paid'])
-        ->where("sales_order_payment.method like '%humm%' ");
+            ->joinLeft($joinSales,'sales_order_payment.entity_id = sales_order.entity_id',['increment_id','state','sales_order.status as orderStatus'])
+            ->where("sales_order_payment.method like '%humm%' ");
+
         parent::_renderFiltersBefore();
     }
 }
