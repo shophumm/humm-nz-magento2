@@ -13,7 +13,6 @@ class Order extends \Magento\Backend\Block\Widget\Grid\Container
 		$this->_controller = 'adminhtml_order';
 		$this->_blockGroup = 'Humm_HummPaymentGateway';
 		$this->_headerText = __('Humm Orders Status');
-//		$this->_addButtonLabel = __('Create New Orders');
 		parent::_construct();
 	}
 }

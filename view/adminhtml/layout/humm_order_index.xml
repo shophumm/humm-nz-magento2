@@ -13,11 +13,6 @@
                         <argument name="save_parameters_in_session" xsi:type="string">1</argument>
                     </arguments>
                     <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="Humm_order_grid.grid.columnSet" as="grid.columnSet">
-                        <!--<arguments>-->
-                            <!--<argument name="rowUrl" xsi:type="array">-->
-                                <!--<item name="path" xsi:type="string">*/*/edit</item>-->
-                            <!--</argument>-->
-                        <!--</arguments>-->
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="entity_id">
                             <arguments>
                                 <argument name="header" xsi:type="string" translate="true">entity_id</argument>
@@ -54,29 +49,47 @@
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
                             </arguments>
                         </block>
+                        <block class="Magento\Backend\Block\Widget\Grid\Column" as="additional-data">
+                            <arguments>
+                                <argument name="header" xsi:type="string" translate="true">additional_information</argument>
+                                <argument name="index" xsi:type="string">additional_information</argument>
+                                <argument name="type" xsi:type="string">text</argument>
+                                <argument name="column_css_class" xsi:type="string">col-id</argument>
+                                <argument name="header_css_class" xsi:type="string">col-id</argument>
+                            </arguments>
+                        </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="created_at">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">Created</argument>
+                                <argument name="header" xsi:type="string" translate="true">created_at</argument>
                                 <argument name="index" xsi:type="string">created_at</argument>
-                                <argument name="type" xsi:type="string">date</argument>
+                                <argument name="type" xsi:type="string">text</argument>
+                                <argument name="column_css_class" xsi:type="string">col-id</argument>
+                                <argument name="header_css_class" xsi:type="string">col-id</argument>
+                            </arguments>
+                        </block>
+                        <block class="Magento\Backend\Block\Widget\Grid\Column" as="amount_paid">
+                            <arguments>
+                                <argument name="header" xsi:type="string" translate="true">amount_paid</argument>
+                                <argument name="index" xsi:type="string">amount_paid</argument>
+                                <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
                             </arguments>
                         </block>
                     </block>
-                    <!--<block class="Magento\Backend\Block\Widget\Grid\Massaction" name="Humm.HummPaymentGateway.massaction" as="grid.massaction">-->
-                        <!--<arguments>-->
-                            <!--<argument name="massaction_id_field" xsi:type="string">entity_id</argument>-->
-                            <!--<argument name="form_field_name" xsi:type="string">entity_id</argument>-->
-                            <!--<argument name="use_select_all" xsi:type="string">1</argument>-->
-                            <!--<argument name="options" xsi:type="array">-->
-                                <!--<item name="disable" xsi:type="array">-->
-                                    <!--<item name="label" xsi:type="string" translate="true">Delete</item>-->
-                                    <!--<item name="url" xsi:type="string">*/*/massDelete</item>-->
-                                <!--</item>-->
-                            <!--</argument>-->
-                        <!--</arguments>-->
-                    <!--</block>-->
+                    <block class="Magento\Backend\Block\Widget\Grid\Massaction" name="Humm.HummPaymentGateway.massaction" as="grid.massaction">
+                        <arguments>
+                            <argument name="massaction_id_field" xsi:type="string">entity_id</argument>
+                            <argument name="form_field_name" xsi:type="string">entity_id</argument>
+                            <argument name="use_select_all" xsi:type="string">1</argument>
+                            <argument name="options" xsi:type="array">
+                                <item name="disable" xsi:type="array">
+                                    <item name="label" xsi:type="string" translate="true">Delete</item>
+                                    <item name="url" xsi:type="string">*/*/massDelete</item>
+                                </item>
+                            </argument>
+                        </arguments>
+                    </block>
                 </block>
             </block>
         </referenceContainer>

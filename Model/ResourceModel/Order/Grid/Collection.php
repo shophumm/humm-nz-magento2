@@ -22,7 +22,7 @@ class Collection extends OriginalCollection
         $this->setMainTable('sales_order_status_history');
         $joinTable = $this->getTable('sales_order_payment');
         $joinSales= $this->getTable('sales_order');
-        $this->getSelect()->joinLeft($joinTable, 'main_table.parent_id = sales_order_payment.entity_id', ['additional_information']);
+        $this->getSelect()->joinLeft($joinTable, 'main_table.parent_id = sales_order_payment.entity_id', ['additional_information','amount_paid']);
         parent::_renderFiltersBefore();
     }
 }
