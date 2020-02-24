@@ -7,30 +7,48 @@
                 <block class="Magento\Backend\Block\Widget\Grid" name="Humm_order_grid.grid" as="grid">
                     <arguments>
                         <argument name="id" xsi:type="string">en</argument>
-                        <argument name="dataSource" xsi:type="object">Humm\HummPaymentGateway\Model\ResourceModel\Order\Collection</argument>
+                        <argument name="dataSource" xsi:type="object">Humm\HummPaymentGateway\Model\ResourceModel\Order\Grid\Collection</argument>
                         <argument name="default_sort" xsi:type="string">id</argument>
-                        <argument name="default_dir" xsi:type="string">ASC</argument>
+                        <argument name="default_dir" xsi:type="string">DESC</argument>
                         <argument name="save_parameters_in_session" xsi:type="string">1</argument>
                     </arguments>
-                    <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="Humm_order_grid.grid.grid.columnSet" as="grid.columnSet">
-                        <arguments>
-                            <argument name="rowUrl" xsi:type="array">
-                                <item name="path" xsi:type="string">*/*/edit</item>
-                            </argument>
-                        </arguments>
+                    <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="Humm_order_grid.grid.columnSet" as="grid.columnSet">
+                        <!--<arguments>-->
+                            <!--<argument name="rowUrl" xsi:type="array">-->
+                                <!--<item name="path" xsi:type="string">*/*/edit</item>-->
+                            <!--</argument>-->
+                        <!--</arguments>-->
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="entity_id">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">ID</argument>
+                                <argument name="header" xsi:type="string" translate="true">entity_id</argument>
                                 <argument name="index" xsi:type="string">entity_id</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
                             </arguments>
                         </block>
+                        <block class="Magento\Backend\Block\Widget\Grid\Column" as="order_id">
+                        <arguments>
+                        <argument name="header" xsi:type="string" translate="true">parent_id</argument>
+                        <argument name="index" xsi:type="string">parent_id</argument>
+                        <argument name="type" xsi:type="string">text</argument>
+                        <argument name="column_css_class" xsi:type="string">col-id</argument>
+                        <argument name="header_css_class" xsi:type="string">col-id</argument>
+                        </arguments>
+                        </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="comment">
                             <arguments>
                                 <argument name="header" xsi:type="string" translate="true">Comment</argument>
                                 <argument name="index" xsi:type="string">comment</argument>
+                                <argument name="type" xsi:type="string">text</argument>
+                                <argument name="column_css_class" xsi:type="string">col-id</argument>
+                                <argument name="header_css_class" xsi:type="string">col-id</argument>
+                            </arguments>
+                        </block>
+                        <block class="Magento\Backend\Block\Widget\Grid\Column" as="Order-Status">
+                            <arguments>
+                                <argument name="header" xsi:type="string" translate="true">status</argument>
+                                <argument name="index" xsi:type="string">status</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
@@ -45,29 +63,20 @@
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
                             </arguments>
                         </block>
-                        <!--<block class="Magento\Backend\Block\Widget\Grid\Column" as="updated_at">-->
-                            <!--<arguments>-->
-                                <!--<argument name="header" xsi:type="string" translate="true">Modified</argument>-->
-                                <!--<argument name="index" xsi:type="string">updated_at</argument>-->
-                                <!--<argument name="type" xsi:type="string">date</argument>-->
-                                <!--<argument name="column_css_class" xsi:type="string">col-id</argument>-->
-                                <!--<argument name="header_css_class" xsi:type="string">col-id</argument>-->
-                            <!--</arguments>-->
-                        <!--</block>-->
                     </block>
-                    <block class="Magento\Backend\Block\Widget\Grid\Massaction" name="mageplaza.helloWorld.massaction" as="grid.massaction">
-                        <arguments>
-                            <argument name="massaction_id_field" xsi:type="string">entity_id</argument>
-                            <argument name="form_field_name" xsi:type="string">ids</argument>
-                            <argument name="use_select_all" xsi:type="string">1</argument>
-                            <argument name="options" xsi:type="array">
-                                <item name="disable" xsi:type="array">
-                                    <item name="label" xsi:type="string" translate="true">Delete</item>
-                                    <item name="url" xsi:type="string">*/*/massDelete</item>
-                                </item>
-                            </argument>
-                        </arguments>
-                    </block>
+                    <!--<block class="Magento\Backend\Block\Widget\Grid\Massaction" name="Humm.HummPaymentGateway.massaction" as="grid.massaction">-->
+                        <!--<arguments>-->
+                            <!--<argument name="massaction_id_field" xsi:type="string">entity_id</argument>-->
+                            <!--<argument name="form_field_name" xsi:type="string">entity_id</argument>-->
+                            <!--<argument name="use_select_all" xsi:type="string">1</argument>-->
+                            <!--<argument name="options" xsi:type="array">-->
+                                <!--<item name="disable" xsi:type="array">-->
+                                    <!--<item name="label" xsi:type="string" translate="true">Delete</item>-->
+                                    <!--<item name="url" xsi:type="string">*/*/massDelete</item>-->
+                                <!--</item>-->
+                            <!--</argument>-->
+                        <!--</arguments>-->
+                    <!--</block>-->
                 </block>
             </block>
         </referenceContainer>

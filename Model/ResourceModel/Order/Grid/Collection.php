@@ -19,8 +19,10 @@ class Collection extends OriginalCollection
 {
     protected function _renderFiltersBefore()
     {
+        $this->setMainTable('sales_order_status_history');
         $joinTable = $this->getTable('sales_order_payment');
-        $this->getSelect()->joinLeft($joinTable, 'main_table.entity_id = sales_order_payment.entity_id', ['additional_information']);
+        $joinSales= $this->getTable('sales_order');
+        $this->getSelect()->joinLeft($joinTable, 'main_table.parent_id = sales_order_payment.entity_id', ['additional_information']);
         parent::_renderFiltersBefore();
     }
 }

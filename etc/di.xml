@@ -130,15 +130,6 @@
     <type name="\Magento\Sales\Model\Order\Email\Sender\OrderSender">
         <plugin name="Humm-OrderSender-Plugin" type="Humm\HummPaymentGateway\Plugin\OrderSenderPlugin"/>
     </type>
-    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="sales_order_grid_data_source" xsi:type="string">
-                    Humm\HummPaymentGateway\Model\ResourceModel\Order\Grid\Collection
-                </item>
-            </argument>
-        </arguments>
-    </type>
 
     <virtualType name="HummLogger" type="Magento\Framework\Logger\Monolog">
         <arguments>
@@ -165,24 +156,5 @@
         <plugin name="Humm_HummPaymentGateway_Plugin" type="Humm\HummPaymentGateway\Plugin\Redicall" sortOrder="10"
                 disabled="false"/>
     </type>
-
-
-    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="humm_hummPaymentsGateway_order_listing_data_source" xsi:type="string">
-                    Humm\HummpaymentGateway\Model\ResourceModel\Order\Grid\Collection
-                </item>
-            </argument>
-        </arguments>
-    </type>
-
-    <virtualType name="Mageplaza\HelloWorld\Model\ResourceModel\Order\Grid\Collection"
-                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
-        <arguments>
-            <argument name="mainTable" xsi:type="string">sales_order_status_history</argument>
-            <argument name="resourceModel" xsi:type="string">Humm\HummPaymentGateway\Model\ResourceModel\Post</argument>
-        </arguments>
-    </virtualType>
 
 </config>

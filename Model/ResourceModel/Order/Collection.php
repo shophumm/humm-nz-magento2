@@ -17,4 +17,24 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->_init('Humm\HummPaymentGateway\Model\Order', 'Humm\HummPaymentGateway\Model\ResourceModel\Order');
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
