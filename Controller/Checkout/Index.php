@@ -20,7 +20,7 @@ class Index extends AbstractAction
         try {
             $order = $this->getOrder();
             if ($order->getState() !== Order::STATE_PENDING_PAYMENT) {
-                if($this->getHummLogger()) {
+                if ($this->getHummLogger()) {
                     $this->getHummLogger()->log('Order in state: ' . $order->getState());
                 }
             }
@@ -30,14 +30,14 @@ class Index extends AbstractAction
                 'fields' => $data
             );
         } catch (Exception $ex) {
-            if($this->getHummLogger()) {
+            if ($this->getHummLogger()) {
                 $this->getHummLogger()->log('An exception was encountered in humm/checkout/index: ' . $ex->getMessage());
                 $this->getHummLogger()->log($ex->getTraceAsString());
             }
             $this->getMessageManager()->addErrorMessage(__('Unable to start humm Checkout.'));
         }
         $result = $this->_resultJsonFactory->create();
-        if($this->getHummLogger()) {
+        if ($this->getHummLogger()) {
             $this->getHummLogger()->log("payload--" . json_encode($payload));
         }
 
@@ -59,7 +59,7 @@ class Index extends AbstractAction
         }
 
         $shippingAddress = $order->getShippingAddress();
-        $billingAddress  = $order->getBillingAddress();
+        $billingAddress = $order->getBillingAddress();
 
         $billingAddressParts = preg_split('/\r\n|\r|\n/', $billingAddress->getData('street'));
         $shippingAddressParts = preg_split('/\r\n|\r|\n/', $shippingAddress->getData('street'));
@@ -94,7 +94,7 @@ class Index extends AbstractAction
             'x_customer_shipping_zip' => $shippingAddress->getData('postcode'),
             'version_info' => 'Humm_' . $plugin_version . '_on_magento' . substr($magento_version, 0, 3),
             'x_test' => 'false',
-            'x_transaction_timeout' => ($this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout')<1440) ? $this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout'):1440,
+            'x_transaction_timeout' => (intval($this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout')) < 1440) ? intval($this->getGatewayConfig()->getConfigdata('humm_conf/api_timeout')) : 1440,
         );
 
         foreach ($data as $key => $value) {
@@ -105,11 +105,11 @@ class Index extends AbstractAction
         $apiKey = $this->_encrypted->processValue($apiKeyEnc);
         $signature = $this->getCryptoHelper()->generateSignature($data, $apiKey);
         $data['x_signature'] = $signature;
-        if($this->getHummLogger()) {
+        if ($this->getHummLogger()) {
             $this->getHummLogger()->log('send-data--:' . json_encode($data));
         }
-        $payment =  $order->getPayment()
-            ->setAdditionalInformation(array("Humm Payment Only Pending"=>"done"));;
+        $payment = $order->getPayment()
+            ->setAdditionalInformation(array("Humm Payment Only Pending" => "done"));;
         $order->save();
         $this->getHummLogger()->log("setAdditional fine:");
         return $data;
