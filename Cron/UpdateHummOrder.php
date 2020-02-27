@@ -38,13 +38,17 @@ class UpdateHummOrder
     public function execute()
     {
         $yesNo= $this->_hummConfig->getConfigdata('humm_conf/pending_order');
+        if(!intval($yesNo))
+        {
+            $this->_hummlogger->log("Clean Pend Order in Crontab Disable");
+            return $this;
+        }
         $daysSkip = intval($this->_hummConfig->getConfigdata('humm_conf/pending_orders_timeout'))-1;
         $time = $this->_timeZone->scopeTimeStamp();
         $dateNow = (new \DateTime())->setTimestamp($time);
         $to = $dateNow->format('Y-m-d H:i:s');
         $from = $dateNow->sub(new \DateInterval('P'.$daysSkip.'D'))->format('Y-m-d H:i:s');
-
-        $this->_hummlogger->log("Start Crontab..time now.." . $to. "|".$yesNo);
+        $this->_hummlogger->log(sprintf("Start Crontab..time now%s OpenFlag%s.." ,$to,$yesNo));
         $this->_hummlogger->log(sprintf("from %s to %s", $from, $to));
         $_collection = $this->getOrderCollectionPaymentMethod(self::paymentMethod, $from, $to);
         $this->processCollection($_collection);
