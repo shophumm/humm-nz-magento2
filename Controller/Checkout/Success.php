@@ -7,7 +7,7 @@ use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 /**
- * roger.bi@flexigroup.cpm.au
+ * roger.bi@flexigroup.com.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
  */
 class Success extends AbstractAction implements CsrfAwareActionInterface
