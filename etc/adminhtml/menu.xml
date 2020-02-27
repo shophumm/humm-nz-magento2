@@ -5,6 +5,5 @@
         <add id="Humm_HummPaymentGateway::Menu" title="Humm Management" module="Humm_HummPaymentGateway"
              sortOrder="51" resource="Humm_HummPaymentGateway::Management"/>
         <add id="Humm_HummPaymentGateway::Order" title="Humm Orders" module="Humm_HummPaymentGateway" sortOrder="10" resource="Humm_HummPaymentGateway::Order"  action="humm/Order" parent="Humm_HummPaymentGateway::Menu"/>
-        <add id="Humm_HummPaymentGateway::OrdersHistory" title="Humm Orders History" resource="Humm_HummPaymentGateway::OrderHistory"  module="Humm_HummPaymentGateway" sortOrder="20" action="humm/OrderHistory" parent="Humm_HummPaymentGateway::Menu"/>
     </menu>
 </config>

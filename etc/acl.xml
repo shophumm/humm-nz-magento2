@@ -6,8 +6,6 @@
                 <resource id="Humm_HummPaymentGateway::Menu" title="Humm HummPayment" sortOrder="51">
                     <resource id="Humm_HummPaymentGateway::Order" title="Humm Order"  sortOrder="10">
                     </resource>
-                    <resource id="Humm_HummPaymentGateway::OrderHistory" title="Humm Order History"  sortOrder="10">
-                    </resource>
                 </resource>
             </resource>
         </resources>
