@@ -5,6 +5,7 @@ namespace Humm\HummPaymentGateway\Cron;
 use Humm\HummPaymentGateway\Helper\HummLogger;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Humm\HummPaymentGateway\Gateway\Config;
 use Magento\Sales\Model\Order;
 
 class UpdateHummOrder
@@ -14,6 +15,7 @@ class UpdateHummOrder
     protected $_orderManager;
     protected $_collection;
     protected $_timeZone;
+    protected $_hummConfig;
     const paymentMethod = 'humm';
     const statuses = ['pending', 'closing'];
 
@@ -21,22 +23,28 @@ class UpdateHummOrder
     public function __construct(
         \Humm\HummPaymentGateway\Helper\HummLogger $hummLogger,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
-        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
+        \Humm\HummPaymentGateway\Gateway\Config\Config $config
+
     )
     {
         $this->_hummlogger = $hummLogger;
         $this->_timeZone = $timezone;
         $this->_orderCollectionFactory = $orderCollectionFactory;
+        $this->_hummConfig = $config;
 
     }
 
     public function execute()
     {
+        $yesNo= $this->_hummConfig->getConfigdata('humm_conf/pending_order');
+        $daysSkip = intval($this->_hummConfig->getConfigdata('humm_conf/pending_orders_timeout'))-1;
         $time = $this->_timeZone->scopeTimeStamp();
         $dateNow = (new \DateTime())->setTimestamp($time);
         $to = $dateNow->format('Y-m-d H:i:s');
-        $this->_hummlogger->log("Start Crontab..time now.." . $to);
-        $from = $dateNow->sub(new \DateInterval('P1D'))->format('Y-m-d H:i:s');
+        $from = $dateNow->sub(new \DateInterval('P'.$daysSkip.'D'))->format('Y-m-d H:i:s');
+
+        $this->_hummlogger->log("Start Crontab..time now.." . $to. "|".$yesNo);
         $this->_hummlogger->log(sprintf("from %s to %s", $from, $to));
         $_collection = $this->getOrderCollectionPaymentMethod(self::paymentMethod, $from, $to);
         $this->processCollection($_collection);

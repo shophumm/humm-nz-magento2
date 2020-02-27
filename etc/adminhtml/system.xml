@@ -88,6 +88,7 @@
                         <label>Humm Payment Log</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
+
                     <field id="min_order_total" translate="label" type="text" sortOrder="140" showInDefault="1"
                            showInWebsite="1" showInStore="0">
                         <label>Minimum Order Amount</label>
@@ -101,6 +102,16 @@
                     <field id="sort_order" translate="label" type="text" sortOrder="160" showInDefault="1"
                            showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>
+                        <validate>validate-number</validate>
+                    </field>
+                    <field id="pending_order" translate="label" type="select" sortOrder="170" showInDefault="1"
+                           showInWebsite="1" showInStore="0">
+                        <label>Clean Humm Pending Order</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="pending_orders_timeout" translate="label" type="text" sortOrder="180" showInDefault="1"
+                           showInWebsite="1" showInStore="0">
+                        <label>Pending_Order_Clean_Day</label>
                         <validate>validate-number</validate>
                     </field>
                 </group>
