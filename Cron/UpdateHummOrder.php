@@ -8,18 +8,51 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Humm\HummPaymentGateway\Gateway\Config;
 use Magento\Sales\Model\Order;
 
+/**
+ * Class UpdateHummOrder
+ * @package Humm\HummPaymentGateway\Cron
+ * @author Roger.bi@flexigroup.com.au
+ */
 class UpdateHummOrder
 {
+    /**
+     * @var HummLogger
+     */
     protected $_hummlogger;
+
+    /**
+     * @var CollectionFactory
+     */
     protected $_orderCollectionFactory;
+
+    /**
+     * @var
+     */
     protected $_orderManager;
+    /**
+     * @var
+     */
     protected $_collection;
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     */
     protected $_timeZone;
+    /**
+     * @var Config\Config
+     */
     protected $_hummConfig;
+
     const paymentMethod = 'humm';
-    const statuses = ['pending', 'closing'];
+    const statuses = ['pending'];
 
 
+    /**
+     * UpdateHummOrder constructor.
+     * @param HummLogger $hummLogger
+     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
+     * @param CollectionFactory $orderCollectionFactory
+     * @param Config\Config $config
+     */
     public function __construct(
         \Humm\HummPaymentGateway\Helper\HummLogger $hummLogger,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
@@ -35,6 +68,11 @@ class UpdateHummOrder
 
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
+
     public function execute()
     {
         $yesNo= $this->_hummConfig->getConfigdata('humm_conf/pending_order');
@@ -43,7 +81,7 @@ class UpdateHummOrder
             $this->_hummlogger->log("Clean Pend Order in Crontab Disable");
             return $this;
         }
-        $daysSkip = intval($this->_hummConfig->getConfigdata('humm_conf/pending_orders_timeout'))-1;
+        $daysSkip = intval($this->_hummConfig->getConfigdata('humm_conf/pending_orders_timeout'));
         $time = $this->_timeZone->scopeTimeStamp();
         $dateNow = (new \DateTime())->setTimestamp($time);
         $to = $dateNow->format('Y-m-d H:i:s');
@@ -55,6 +93,12 @@ class UpdateHummOrder
         return $this;
     }
 
+    /**
+     * @param null $paymentMethod
+     * @param $from
+     * @param $to
+     * @return $this
+     */
     public function getOrderCollectionPaymentMethod($paymentMethod = null, $from, $to)
     {
         $collection = $this->_orderCollectionFactory->create()
@@ -85,6 +129,10 @@ class UpdateHummOrder
 
     }
 
+    /**
+     * @param $collection
+     */
+
     public function processCollection($collection)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -96,6 +144,11 @@ class UpdateHummOrder
 
     }
 
+    /**
+     * @param $hummOrderId
+     * @param $objectManager
+     */
+
     public function processHummOrder($hummOrderId, $objectManager)
     {
 
@@ -106,6 +159,11 @@ class UpdateHummOrder
             $hummOrder->registerCancellation('cancelled by customer Cron Humm Payment ')->save();
         }
     }
+
+    /**
+     * @param array $statuses
+     * @return mixed
+     */
 
     public function getOrderCollectionByStatus($statuses = [])
     {
