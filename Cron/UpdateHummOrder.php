@@ -86,7 +86,7 @@ class UpdateHummOrder
         $dateNow = (new \DateTime())->setTimestamp($time);
         $to = $dateNow->format('Y-m-d H:i:s');
         $from = $dateNow->sub(new \DateInterval('P'.$daysSkip.'D'))->format('Y-m-d H:i:s');
-        $this->_hummlogger->log(sprintf("Start Crontab..time now%s OpenFlag%s.." ,$to,$yesNo));
+        $this->_hummlogger->log(sprintf("Start Crontab..time now%s OpenFlag[%s..]" ,$to,$yesNo));
         $this->_hummlogger->log(sprintf("from %s to %s", $from, $to));
         $_collection = $this->getOrderCollectionPaymentMethod(self::paymentMethod, $from, $to);
         $this->processCollection($_collection);
@@ -155,7 +155,9 @@ class UpdateHummOrder
         $hummOrder = $objectManager->create('\Magento\Sales\Model\Order')->load($hummOrderId);
 
         if ($hummOrder->getId() && $hummOrder->getState() != Order::STATE_CANCELED) {
-            $this->_hummlogger->log($hummOrder->getState() . 'Crontab' . $hummOrderId);
+            $this->_hummlogger->log(sprintf("Order ID %s, Order State %s", $hummOrderId,$hummOrder->getState()));
+            $hummPayment = $hummOrder->getPayment()->setAdditionalInformation(array(sprintf("Update Humm Pending OrderId %s to Cancelled",$hummOrderId) => "Cancelled"));;
+            $this->_hummlogger->log(sprintf("Payment:%s",json_encode($hummPayment)));
             $hummOrder->registerCancellation('cancelled by customer Cron Humm Payment ')->save();
         }
     }
