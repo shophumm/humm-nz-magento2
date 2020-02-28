@@ -109,7 +109,7 @@ class Index extends AbstractAction
             $this->getHummLogger()->log('send-data--:' . json_encode($data));
         }
         $payment = $order->getPayment()
-            ->setAdditionalInformation(array("Humm Payment Only Pending" => "done"));;
+            ->setAdditionalInformation(array($orderId => "Pending before redirect"));;
         $order->save();
         $this->getHummLogger()->log("setAdditional fine:");
         return $data;

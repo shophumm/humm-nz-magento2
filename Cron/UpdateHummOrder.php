@@ -150,13 +150,10 @@ class UpdateHummOrder
         $hummOrder = $objectManager->create('\Magento\Sales\Model\Order')->load($hummOrderId);
 
         if ($hummOrder->getId() && $hummOrder->getState() != Order::STATE_CANCELED) {
-            $this->_hummlogger->log(sprintf("Order ID %s, Order State %s", $hummOrderId, $hummOrder->getState()));
-
             $hummPayment = $hummOrder->getPayment();
             $AdditionalInformation = $hummPayment->getAdditionalInformation();
             $AdditionalInformationNew = array_merge($AdditionalInformation,[$hummOrderId=>sprintf("Update Humm Pending OrderId %s to Cancelled", $hummOrderId)]);
             $this->_hummlogger->log(sprintf("Additional %s ", json_encode($AdditionalInformationNew)));
-//          $hummPayment->setAdditionalInformation(array(sprintf("Update Humm Pending OrderId %s to Cancelled", $hummOrderId) => "Cancelled"));;
             $hummPayment->setAdditionalInformation($AdditionalInformationNew );
             $hummOrder->registerCancellation('cancelled by customer Cron Humm Payment ')->save();
         }
@@ -174,7 +171,6 @@ class UpdateHummOrder
             ->addFieldToFilter('status',
                 ['in' => $statuses]
             );
-
         return $collection;
 
     }

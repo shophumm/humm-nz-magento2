@@ -6,6 +6,7 @@ use Magento\Sales\Model\Order;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
+
 /**
  * roger.bi@flexigroup.com.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
@@ -85,9 +86,12 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 $payment = $order->getPayment();
                 $payment->setTransactionId($transactionId);
                 $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
-                $payment->setAdditionalInformation(array("HummPayment".$result =>"done"));;
+                $AdditionalNew = array_merge($payment->getAdditionalInformation(),
+                    ["result" => sprintf(("Method :[%s] Result :[%s]"),$this->getRequest()->getMethod(),$result)]
+                );
+                $payment->setAdditionalInformation($AdditionalNew);;
                 $order->save();
-                $this->logContent("After update state&status".$order->getState()."|".$order->getStatus());
+                $this->logContent("After update state&status" . $order->getState() . "|" . $order->getStatus());
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
                 $emailSender->send($order);
@@ -120,24 +124,6 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public function createCsrfValidationException(
-        RequestInterface $request
-    ): ?InvalidRequestException
-    {
-        return null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validateForCsrf(RequestInterface $request): ?bool
-    {
-        return true;
-    }
-
-    /**
      * @param $orderStatus
      * @return bool
      */
@@ -153,6 +139,18 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
             }
         }
         return false;
+    }
+
+    /**
+     * @param $content
+     */
+
+    public function logContent($content)
+    {
+
+        if ($this->getHummLogger()) {
+            $this->getHummLogger()->log("Trace Content:" . $content);
+        }
     }
 
     /**
@@ -189,13 +187,20 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
     }
 
     /**
-     * @param $content
+     * @inheritDoc
      */
+    public function createCsrfValidationException(
+        RequestInterface $request
+    ): ?InvalidRequestException
+    {
+        return null;
+    }
 
-    public function logContent($content) {
-
-        if ($this->getHummLogger()) {
-            $this->getHummLogger()->log("Trace Content:" . $content);
-        }
+    /**
+     * @inheritDoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }
