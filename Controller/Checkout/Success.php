@@ -6,6 +6,7 @@ use Magento\Sales\Model\Order;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
+use Magento\Setup\Exception;
 
 /**
  * roger.bi@flexigroup.com.au
@@ -15,6 +16,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 {
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @throws \Exception
      */
     public function execute()
     {
@@ -24,6 +26,24 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         $result = $params['x_result'];
         $orderId = $params['x_reference'];
         $transactionId = $params['x_gateway_reference'];
+        $merchantNo = $params['x_account_id'];
+        $orderDue = $params['x_amount'];
+        $order = $this->getOrderById($orderId);
+        $orderTotalDue = $order->getTotalDue();
+        $merchantNumber = $this->getGatewayConfig()->getMerchantNumber();
+
+        $mesg = sprintf("%s Order Amount %s | %s MerchantNo %s |[Response---%s] [method--%s]", $orderTotalDue,$orderDue,$merchantNumber,$merchantNo,json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
+        $this->getHummLogger()->log($mesg);
+
+        if ( ($merchantNo != $this->getGatewayConfig()->getMerchantNumber() ) || ($orderDue != $order->getTotalDue()))
+        {
+            $mesg = sprintf("%s Order Amount %s | %s MerchantNo %s |[Response---%s] [method--%s]", $orderTotalDue,$orderDue,$merchantNumber,$merchantNo,json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
+            $this->getHummLogger()->log($mesg);
+            throw new \Exception($mesg);
+        }
+
+
+
         if ($this->getHummLogger()) {
             $this->getHummLogger()->log(sprintf("[Response---:%s] [method = %s]", json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         }
@@ -45,7 +65,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
             return;
         }
 
-        $order = $this->getOrderById($orderId);
+
         if (!$order) {
             if ($this->getHummLogger()) {
                 $this->getHummLogger()->log("Humm returned an id for an order that could not be retrieved: $orderId");
@@ -87,7 +107,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 $payment->setTransactionId($transactionId);
                 $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
                 $AdditionalNew = array_merge($payment->getAdditionalInformation(),
-                    ["result" => sprintf(("Method :[%s] Result :[%s]"),$this->getRequest()->getMethod(),$result)]
+                    ["result" => sprintf(("Method :[%s] Result :[%s]"), $this->getRequest()->getMethod(), $result)]
                 );
                 $payment->setAdditionalInformation($AdditionalNew);;
                 $order->save();
