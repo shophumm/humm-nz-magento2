@@ -15,7 +15,7 @@
                 </arguments>
             </block>
         </referenceContainer>
-        <referenceContainer name="checkout.cart.methods">
+        <referenceContainer name="checkout.cart.widget">
             <block class="Humm\HummPaymentGateway\Block\Advert\Widget" name="product.info.addtocart.additional.humm.productimage" template="advert/cartWidget.phtml">
                 <arguments>
                     <argument name="page_type" xsi:type="string">cart</argument>

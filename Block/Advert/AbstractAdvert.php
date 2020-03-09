@@ -151,4 +151,14 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
         return $this->_config->getSpecificCountry();
     }
 
+    /**
+     * @return mixed
+     */
+
+    public function _getThreshold()
+    {
+        return $this->_config->getLittleBig();
+    }
+
+
 }
