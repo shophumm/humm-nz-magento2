@@ -142,4 +142,13 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
         return $grandTotal;
     }
 
+    /**
+     * @return string
+     */
+
+    public function _getCountry()
+    {
+        return $this->_config->getSpecificCountry();
+    }
+
 }
