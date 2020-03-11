@@ -29,6 +29,8 @@ To integrate **humm** you will need your
 
 5.  [Configure humm](#configuration)
 
+
+
 ## Integrating **humm** Manually
 
 1 - Download the **humm** plugin zip from [GitHub](https://github.com/shophumm/humm-magento2.x/tree/pendOrder).
@@ -43,11 +45,13 @@ You should see `Module 'Humm_HummPaymentGateway'` in the output of the command.
 
 > Depending on your tech stack, you might have to use the <code>php</code> prefix (`php MAGENTO_DIR/bin/magento setup:upgrade`) when running the various <code>magento</code> commands.
 
-4 - Flush Magento's Cache: **Settings** -> **Cache Management** -> **Flush Magento Cache**.
+4 bin/magento module:enable Humm_HummPaymentGateway
+
+5 - Flush Magento's Cache: **Settings** -> **Cache Management** -> **Flush Magento Cache**.
 
 Alternatively, run <code>MAGENTO_DIR/bin/magento cache:flush</code> from command line.
 
-5  -DI compile
+6  -DI compile
 
   Run `MAGENTO_DIR/bin/magento setup:di:compile`
 
@@ -60,9 +64,9 @@ Alternatively, run <code>MAGENTO_DIR/bin/magento cache:flush</code> from command
 Navigate to **Stores** -> **Configuration** -> **Sales** -> **Payment Methods**.
 
 
-![5.png](\img\ecommerce\magento_2\5.png)
-![6.png](\img\ecommerce\magento_2\6.png)
-![7.png](\img\ecommerce\magento_2\7.png)
+Reference Online Doc
+
+https://docs.shophumm.com.au/ecommerce/magento_2/ Configuration sections
 
 ## Varnish Cache
 
