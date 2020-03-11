@@ -1,35 +1,3 @@
-#Integrating on Magento 2 Version
-
-Use the same instructions to upgrade the **humm** plugin to a newer release.
-
-## Locate your **humm** Credentials
-
-To integrate **humm** you will need your
-
-* Merchant Number
-* API Key
-
-## Integrating **humm** using Composer
-
-1. Add the **humm** repository, in Magento's root directory
-
-        composer config repositories.shophumm git https://github.com/shophumm/humm-magento2.x.git
-
-2. Require the Humm Payment Gateway Module
-
-        composer require humm/module-humm-payment-gateway:dev-master
-
-3. Enable the module
-
-        ./bin/magento module:enable Humm_HummPaymentGateway --clear-static-content
-
-4. Update the database
-
-        ./bin/magento setup:upgrade
-
-5.  [Configure humm](#configuration)
-
-
 
 ## Integrating **humm** Manually
 
@@ -37,15 +5,15 @@ To integrate **humm** you will need your
 
 2 - Unzip it then copy all of folders into the `MAGENTO_DIR/app/code/Humm/HummPaymentGateway` directory on your webserver.
 
-> If the `code/Humm/HummPaymentGateway` folder doesn't exist, then create it manually.
+>  If the `code/Humm/HummPaymentGateway` folder doesn't exist, then create it manually.
 
 3 - Run `MAGENTO_DIR/bin/magento setup:upgrade` to enable **humm**.
 
-You should see `Module 'Humm_HummPaymentGateway'` in the output of the command.
+   You should see `Module 'Humm_HummPaymentGateway'` in the output of the command.
 
-> Depending on your tech stack, you might have to use the <code>php</code> prefix (`php MAGENTO_DIR/bin/magento setup:upgrade`) when running the various <code>magento</code> commands.
+>  Depending on your tech stack, you might have to use the <code>php</code> prefix (`php MAGENTO_DIR/bin/magento setup:upgrade`) when running the various <code>magento</code> commands.
 
-4 bin/magento module:enable Humm_HummPaymentGateway
+4 - Run bin/magento module:enable Humm_HummPaymentGateway
 
 5 - Flush Magento's Cache: **Settings** -> **Cache Management** -> **Flush Magento Cache**.
 
@@ -53,7 +21,7 @@ Alternatively, run <code>MAGENTO_DIR/bin/magento cache:flush</code> from command
 
 6  -DI compile
 
-  Run `MAGENTO_DIR/bin/magento setup:di:compile`
+  - Run `MAGENTO_DIR/bin/magento setup:di:compile`
 
 > You may need to run `MAGENTO_DIR/bin/magento setup:static-content:deploy`. This is to avoid generated HTML referring to javascript/css that haven't been added to the list of compiled/minified assets which can break your store's front-end/admin panel.
 
