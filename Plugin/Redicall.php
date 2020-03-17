@@ -18,10 +18,5 @@ class Redicall
     public function afterStatusExists(\Humm\HummPaymentGateway\Controller\Checkout\Success $subject, $result)
     {
 
-        $this->logger->debug("hhhhhh");
-        $this->logger->debug(json_encode($result));
-        $this->logger->debug(json_encode($subject));
-
-
     }
 }

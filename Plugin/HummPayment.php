@@ -16,7 +16,6 @@ class HummPayment
         $additionalData
     )
     {
-        $this->_objectManager->get('Psr\Log\LoggerInterface')->debug("okokokok");
         $logger->debug(json_encode("additionalData" . $additionalData));
         $additionalData = $additionalData . "this is an action";
     }
