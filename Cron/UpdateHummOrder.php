@@ -119,7 +119,7 @@ class UpdateHummOrder
             'created_at',
             'desc'
         );
-
+        $this->_hummlogger->log(sprintf("Query %s",  $collection->getSelect()->__toString()),true);
         return $collection;
 
     }
@@ -147,7 +147,7 @@ class UpdateHummOrder
     public function processHummOrder($hummOrderId, $objectManager)
     {
 
-        $hummOrder = $objectManager->create('\Magento\Sales\Model\Order')->load($hummOrderId);
+        $hummOrder = $objectManager->create('\Magento\Sales\Model\Order')->loadByIncrementId($hummOrderId);
 
         if ($hummOrder->getId() && $hummOrder->getState() != Order::STATE_CANCELED) {
             $hummPayment = $hummOrder->getPayment();
