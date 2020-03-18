@@ -22,7 +22,7 @@ use Magento\Framework\View\Asset\Repository;
 final class ConfigProvider implements ConfigProviderInterface
 {
 
-    const LAUNCH_TIME_URL = 'https://s3-ap-southeast-2.amazonaws.com/humm-variables/launch-time.txt';
+    const LAUNCH_TIME_URL = 'https://humm-variables.s3-ap-southeast-2.amazonaws.com/nz-launch-time.txt';
     const LAUNCH_TIME_DEFAULT = "2020-05-11 00:00:00 UTC";
     const LAUNCH_TIME_CHECK_ENDS = "2020-05-18 00:00:00 UTC";
 
@@ -94,6 +94,7 @@ final class ConfigProvider implements ConfigProviderInterface
                 ]
             ]
         ];
+        $this->_logger->log("config" . json_encode($config), true);
 
         return $config;
     }
@@ -106,23 +107,24 @@ final class ConfigProvider implements ConfigProviderInterface
         $this->_logger->log("Get Real time" . time());
         if (time() - strtotime(self::LAUNCH_TIME_CHECK_ENDS) > 0) {
             if (!$this->_gatewayConfig->getLaunchTime()) {
-                $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time', strtotime(self::LAUNCH_TIME_DEFAULT), 'default', 0);
+                $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', strtotime(self::LAUNCH_TIME_DEFAULT), 'default', 0);
             }
             return;
         }
         $launch_time = $this->_gatewayConfig->getLaunchTime();
         $launch_time_update_time = $this->_gatewayConfig->getLaunchTimeUpdated();
-        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 1440)) {
+        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 60)) {
             $remote_launch_time_string = '';
             try {
                 $remote_launch_time_string = file_get_contents(self::LAUNCH_TIME_URL);
             } catch (\Exception $exception) {
             }
             if (!empty($remote_launch_time_string)) {
+                $this->_logger->log($remote_launch_time_string, true);
                 $launch_time = strtotime($remote_launch_time_string);
-                $this->_logger->log($launch_time . "check..." .time() .$remote_launch_time_string);
-                $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time', $launch_time, 'default', 0);
-                $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time_updated', time(), 'default', 0);
+                $this->_logger->log($launch_time . "check..." . time() . $remote_launch_time_string);
+                $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', $launch_time, 'default', 0);
+                $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time_updated', time(), 'default', 0);
             } elseif (empty($launch_time) || (empty($launch_time_update_time) && $launch_time != strtotime(self::LAUNCH_TIME_DEFAULT))) {
                 $launch_time = strtotime(self::LAUNCH_TIME_DEFAULT);
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/launch_time', $launch_time, 'default', 0);
