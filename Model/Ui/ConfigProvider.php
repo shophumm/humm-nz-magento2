@@ -120,10 +120,12 @@ final class ConfigProvider implements ConfigProviderInterface
             } catch (\Exception $exception) {
             }
             if (!empty($remote_launch_time_string)) {
-                $this->_logger->log($remote_launch_time_string, true);
+                $this->_logger->log($remote_launch_time_string."|".self::LAUNCH_TIME_DEFAULT, true);
                 $launch_time = strtotime($remote_launch_time_string);
                 $this->_logger->log($launch_time . "check..." . time() . $remote_launch_time_string);
-                $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', $launch_time, 'default', 0);
+                if ($remote_launch_time_string >= self::LAUNCH_TIME_DEFAULT) {
+                    $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', $launch_time, 'default', 0);
+                }
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time_updated', time(), 'default', 0);
             } elseif (empty($launch_time) || (empty($launch_time_update_time) && $launch_time != strtotime(self::LAUNCH_TIME_DEFAULT))) {
                 $launch_time = strtotime(self::LAUNCH_TIME_DEFAULT);
