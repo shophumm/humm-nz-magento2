@@ -31,6 +31,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const KEY_LAUNCH_TIME_UPDATED = 'launch_time_updated';
     const KEY_MIN_ORDER_TOTAL = 'min_order_total';
     const KEY_HUMM_LOGGER = 'humm_logger';
+    const KEY_FORCE_HUMM = 'force_humm';
 
     const KEY_LITTLE_BIG = 'little_big';
 
@@ -80,7 +81,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getTitle()
     {
-        $is_after = (time() - $this->getLaunchTime() >= 0);
+        $is_after = ((time() - $this->getLaunchTime() >= 0) || $this->getForceHumm());
 
         if ($this->getSpecificCountry() == 'NZ') {
             $title = $is_after ? 'Humm' : 'Oxipay';
@@ -98,6 +99,14 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getLaunchTime()
     {
         return $this->getValue(self::CONF_PREFIX . self::KEY_LAUNCH_TIME);
+    }
+
+    /**
+     *
+     */
+    public function getForceHumm()
+    {
+        return$this->getValue(self::CONF_PREFIX .self::KEY_FORCE_HUMM);
     }
 
     /**
