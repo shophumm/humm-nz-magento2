@@ -34,6 +34,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 
         $mesg = sprintf("%s Order Amount %s | %s MerchantNo %s |[Response---%s] [method--%s]", $orderTotalDue,$orderDue,$merchantNumber,$merchantNo,json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
         $this->getHummLogger()->log($mesg);
+        $this->getHummLogger()->log('IP:'.$this->getClientIP(),True);
 
         if ( ($merchantNo != $this->getGatewayConfig()->getMerchantNumber() ) || ($orderDue != $order->getTotalDue()))
         {
@@ -222,5 +223,15 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClientIP()
+    {
+        $objctManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $remote = $objctManager->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress');
+        return $remote->getRemoteAddress();
     }
 }
