@@ -139,22 +139,9 @@
         </arguments>
     </virtualType>
 
-
     <type name="Humm_HummPaymentGateway\Model\Observer\CheckState">
         <arguments>
             <argument name="hummLogger" xsi:type="object">Humm\HummPaymentGateway\Helper\HummLogger</argument>
         </arguments>
     </type>
-
-
-    <type name="Magento\Quote\Model\Quote\Payment">
-        <plugin sortOrder="1" name="set_extra_data"
-                type="Humm\HummPaymentGateway\Plugin\HummPayment"/>
-    </type>
-
-    <type name="Humm\HummPaymentGateway\Controller\Checkout\Success">
-        <plugin name="Humm_HummPaymentGateway_Plugin" type="Humm\HummPaymentGateway\Plugin\Redicall" sortOrder="10"
-                disabled="false"/>
-    </type>
-
 </config>
