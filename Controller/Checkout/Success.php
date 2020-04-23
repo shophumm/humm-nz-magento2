@@ -24,25 +24,23 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         $params = $this->getRequest()->getParams();
         $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
         $result = $params['x_result'];
-        $orderId = $params['x_reference'];
+        list($orderId, $hummProtectCode) = explode("-", $params['x_reference']);
         $transactionId = $params['x_gateway_reference'];
         $merchantNo = $params['x_account_id'];
         $orderDue = $params['x_amount'];
         $order = $this->getOrderById($orderId);
-        $orderTotalDue = $order->getTotalDue();
         $merchantNumber = $this->getGatewayConfig()->getMerchantNumber();
 
-        $mesg = sprintf("%s Order Amount %s | %s MerchantNo %s |[Response---%s] [method--%s]", $orderTotalDue,$orderDue,$merchantNumber,$merchantNo,json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
+        $mesg = sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
         $this->getHummLogger()->log($mesg);
-        $this->getHummLogger()->log('IP:'.$this->getClientIP(),True);
+        $this->getHummLogger()->log('Client IP:' . $this->getClientIP(), True);
 
-        if ( ($merchantNo != $this->getGatewayConfig()->getMerchantNumber() ) || ($orderDue != $order->getTotalDue()))
-        {
-            $mesg = sprintf("%s Order Amount %s | %s MerchantNo %s |[Response---%s] [method--%s]", $orderTotalDue,$orderDue,$merchantNumber,$merchantNo,json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode())) {
+            $mesg = sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
             $this->getHummLogger()->log($mesg);
-            throw new \Exception($mesg);
+            $this->_redirect('humm/checkout/error');
+            return;
         }
-
 
 
         if ($this->getHummLogger()) {
@@ -97,7 +95,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 }
                 $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
                 if ($this->getHummLogger()) {
-                    $this->getHummLogger()->log("callback successful: state ==" . $orderState . "|" . $orderStatus);
+                    $this->getHummLogger()->log("END callback successful: state ==" . $orderState . "|" . $orderStatus);
                 }
                 $order->setState($orderState)
                     ->setStatus($orderStatus)
@@ -124,7 +122,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                     }
                 }
                 if ($this->getHummLogger()) {
-                    $this->getHummLogger()->log("Humm returned successful for orderID:" . $orderId);
+                    $this->getHummLogger()->log("END Payment:Humm payment successful for orderID:" . $orderId);
                 }
                 $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
             } catch (\Exception $e) {

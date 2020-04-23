@@ -38,9 +38,8 @@ class Index extends AbstractAction
         }
         $result = $this->_resultJsonFactory->create();
         if ($this->getHummLogger()) {
-            $this->getHummLogger()->log("payload--" . json_encode($payload));
+            $this->getHummLogger()->log("Transaction Start   Payload--" . json_encode($payload));
         }
-
         return $result->setData($payload);
     }
 
@@ -68,6 +67,7 @@ class Index extends AbstractAction
         $magento_version = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ProductMetadataInterface')->getVersion();
         $plugin_version = $this->getGatewayConfig()->getVersion();
 
+
         $data = array(
             'x_currency' => $order->getOrderCurrencyCode(),
             'x_url_callback' => $this->getDataHelper()->getCompleteUrl(),
@@ -75,7 +75,7 @@ class Index extends AbstractAction
             'x_url_cancel' => $this->getDataHelper()->getCancelledUrl($orderId),
             'x_shop_name' => $this->getDataHelper()->getStoreCode(),
             'x_account_id' => $this->getGatewayConfig()->getMerchantNumber(),
-            'x_reference' => $orderId,
+            'x_reference' => sprintf("%s-%s", $orderId, $order->getProtectCode()),
             'x_invoice' => $orderId,
             'x_amount' => $order->getTotalDue(),
             'x_customer_first_name' => $order->getCustomerFirstname(),
@@ -100,18 +100,13 @@ class Index extends AbstractAction
         foreach ($data as $key => $value) {
             $data[$key] = preg_replace('/\r\n|\r|\n/', ' ', $value);
         }
-
         $apiKeyEnc = $this->getGatewayConfig()->getApiKey();
         $apiKey = $this->_encrypted->processValue($apiKeyEnc);
         $signature = $this->getCryptoHelper()->generateSignature($data, $apiKey);
         $data['x_signature'] = $signature;
-        if ($this->getHummLogger()) {
-            $this->getHummLogger()->log('send-data--:' . json_encode($data));
-        }
         $payment = $order->getPayment()
             ->setAdditionalInformation(array($orderId => "Pending before redirect"));;
         $order->save();
-        $this->getHummLogger()->log("setAdditional fine:");
         return $data;
     }
 }
