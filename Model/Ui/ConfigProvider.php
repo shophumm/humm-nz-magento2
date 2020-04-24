@@ -94,8 +94,6 @@ final class ConfigProvider implements ConfigProviderInterface
                 ]
             ]
         ];
-        $this->_logger->log("config" . json_encode($config), true);
-
         return $config;
     }
 
@@ -104,7 +102,6 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     private function updateLaunchDate()
     {
-        $this->_logger->log("Get Real time" . time());
         if (time() - strtotime(self::LAUNCH_TIME_CHECK_ENDS) > 0) {
             if (!$this->_gatewayConfig->getLaunchTime()) {
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', strtotime(self::LAUNCH_TIME_DEFAULT), 'default', 0);
@@ -120,9 +117,7 @@ final class ConfigProvider implements ConfigProviderInterface
             } catch (\Exception $exception) {
             }
             if (!empty($remote_launch_time_string)) {
-                $this->_logger->log($remote_launch_time_string."|".self::LAUNCH_TIME_DEFAULT, true);
                 $launch_time = strtotime($remote_launch_time_string);
-                $this->_logger->log($launch_time . "check..." . time() . $remote_launch_time_string);
                 if ($remote_launch_time_string >= self::LAUNCH_TIME_DEFAULT) {
                     $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', $launch_time, 'default', 0);
                 }
