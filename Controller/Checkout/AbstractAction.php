@@ -220,13 +220,9 @@ abstract class AbstractAction extends Action
 
     protected function getHummLogger()
     {
-        if ($this->_gatewayConfig->getDebug()) {
+//        if ($this->_gatewayConfig->getDebug()) {
             return $this->_hummLogger;
-        }
-        else
-        {
-            return null;
-        }
+//        }
     }
 
 

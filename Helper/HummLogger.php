@@ -3,7 +3,7 @@
 namespace Humm\HummPaymentGateway\Helper;
 
 Use \Magento\Framework\App\Helper\AbstractHelper;
-Use Humm\HummPaymentGateway\Gateway\Config;
+Use Humm\HummPaymentGateway\Gateway\Config\Config;
 use Magento\Framework\App\Helper\Context;
 
 /**
@@ -14,10 +14,10 @@ use Magento\Framework\App\Helper\Context;
 class  HummLogger extends AbstractHelper
 {
     /**
-     * @var \Magento\Framework\Logger\Monolog|\Psr\Log\LoggerInterface
+     * @var
      */
     protected $_hummPaymentLog;
-
+    protected $_hummConfig;
 
     /**
      * HummLogger constructor.
@@ -27,11 +27,13 @@ class  HummLogger extends AbstractHelper
      */
     public function __construct(Context $context,
                                 \Magento\Framework\Logger\Monolog $hummPaymentLogger,
+                                \Humm\HummPaymentGateway\Gateway\Config\Config $hummConfig,
                                 \Magento\Framework\Module\ModuleListInterface $moduleList
     )
     {
 
         $this->_hummPaymentLog = $hummPaymentLogger;
+        $this->_hummConfig = $hummConfig;
         $this->_moduleList = $moduleList;
         parent::__construct($context);
     }
@@ -44,9 +46,12 @@ class  HummLogger extends AbstractHelper
     public function log($message, $useSeparator = false)
     {
 
+        if ($this->_hummConfig->getDebug()) {
             if ($useSeparator) {
                 $this->_hummPaymentLog->addDebug(str_repeat('=', 100));
             }
             $this->_hummPaymentLog->addDebug($message);
+        }
     }
+
 }

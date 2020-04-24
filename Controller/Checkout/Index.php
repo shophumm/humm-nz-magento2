@@ -3,6 +3,7 @@
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
 use Magento\Sales\Model\Order;
+use Humm\HummPaymentGateway\Helper\HummLogger;
 
 /**
  * roger.bi@flexigroup.com.au
@@ -20,26 +21,20 @@ class Index extends AbstractAction
         try {
             $order = $this->getOrder();
             if ($order->getState() !== Order::STATE_PENDING_PAYMENT) {
-                if ($this->getHummLogger()) {
                     $this->getHummLogger()->log('Order in state: ' . $order->getState());
                 }
-            }
             $data = $this->getPayload($order);
             $payload = array(
                 'action' => $this->getGatewayConfig()->getGatewayUrl(),
                 'fields' => $data
             );
         } catch (Exception $ex) {
-            if ($this->getHummLogger()) {
                 $this->getHummLogger()->log('An exception was encountered in humm/checkout/index: ' . $ex->getMessage());
                 $this->getHummLogger()->log($ex->getTraceAsString());
-            }
-            $this->getMessageManager()->addErrorMessage(__('Unable to start humm Checkout.'));
+                $this->getMessageManager()->addErrorMessage(__('Unable to start humm Checkout.'));
         }
         $result = $this->_resultJsonFactory->create();
-        if ($this->getHummLogger()) {
             $this->getHummLogger()->log("Transaction Start   Payload--" . json_encode($payload));
-        }
         return $result->setData($payload);
     }
 
@@ -51,10 +46,8 @@ class Index extends AbstractAction
     private function getPayload($order)
     {
         if ($order == null) {
-            if ($this->getHummLogger()) {
                 $this->getHummLogger()->log('Unable to get order from last lodged order id. Possibly related to a failed database call');
-            }
-            $this->_redirect('checkout/onepage/error', array('_secure' => false));
+               $this->_redirect('checkout/onepage/error', array('_secure' => false));
         }
 
         $shippingAddress = $order->getShippingAddress();
