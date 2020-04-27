@@ -19,7 +19,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
      */
     public function execute()
     {
-        list($order,$transactionId,$result,$orderId) = $this->ValidateCallback();
+        list($order, $transactionId, $result, $orderId) = $this->ValidateCallback();
 
         if ($result == "completed") {
             $orderState = Order::STATE_PROCESSING;
@@ -50,7 +50,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                     $this->invoiceOrder($order, $transactionId);
                     $this->getHummLogger()->log("Humm invoice produced:" . $orderId);
                 }
-                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s]",$orderId,$orderState,$orderStatus));
+                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s]", $orderId, $orderState, $orderStatus));
                 $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
             } catch (\Exception $e) {
                 $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
@@ -63,6 +63,67 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
             $this->getMessageManager()->addErrorMessage(__("There was an error in the humm payment"));
             $this->_redirect('checkout/cart', array('_secure' => false));
         }
+    }
+
+    /**
+     * @return array|void
+     */
+
+    public function ValidateCallback()
+    {
+
+        $params = $this->getRequest()->getParams();
+        $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
+        $result = $params['x_result'];
+        list($orderId, $hummProtectCode) = explode("-", $params['x_reference']);
+        $transactionId = $params['x_gateway_reference'];
+        $merchantNo = $params['x_account_id'];
+        $order = $this->getOrderById($orderId);
+        $mesg = array();
+        $errorMsg = array();
+        $redirectErrorURL = "humm/checkout/error";
+        $merchantNumber = $this->getGatewayConfig()->getMerchantNumber();
+        array_push($mesg, sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
+        array_push($mesg, sprintf("Client IP: %s", $this->getClientIP()));
+
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode())) {
+            array_push($errorMsg, sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
+        }
+
+        if (!$isValid) {
+            array_push($errorMsg, sprintf("Possible site forgery detected: invalid response signature transactionId:[%s]", $transactionId));
+
+        }
+
+        if (!$orderId) {
+            array_push($errorMsg, sprintf("Humm returned a null order id. This may indicate an issue with the humm payment gateway."));
+        }
+        if (!$order) {
+            array_push($errorMsg, sprintf("\"Humm returned an id for an order that could not be retrieved", $orderId));
+
+        }
+        array_walk($mesg, function ($eachMesg) {
+            $this->getHummLogger()->log($eachMesg, true);
+        });
+
+        if (count($errorMsg)) {
+            array_map(function ($eachError) {
+                $this->getHummLogger()->log($eachError);
+            }, $errorMsg);
+            $this->_redirect($redirectErrorURL);
+            return;
+        }
+        if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
+            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+            return;
+        }
+
+        if ($result == "failed" && $order->getState() === Order::STATE_CANCELED) {
+            $this->_redirect('checkout/onepage/failure', array('_secure' => false));
+            return;
+        }
+
+        return array($order, $transactionId, $result, $orderId);
     }
 
     /**
@@ -92,6 +153,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         }
         return false;
     }
+
     /**
      * @param $order
      * @param $transactionId
@@ -141,70 +203,5 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
-    }
-
-    /**
-     * @return array|void
-     */
-
-    public function ValidateCallback(){
-
-        $params = $this->getRequest()->getParams();
-        $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
-        $result = $params['x_result'];
-        list($orderId, $hummProtectCode) = explode("-", $params['x_reference']);
-        $transactionId = $params['x_gateway_reference'];
-        $merchantNo = $params['x_account_id'];
-        $order = $this->getOrderById($orderId);
-        $mesg = array();
-        $errorMsg = array();
-        $redirectErrorURL = '';
-        $merchantNumber = $this->getGatewayConfig()->getMerchantNumber();
-        $mesg[] = sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
-        $mesg[] = sprintf("Client IP: %s", $this->getClientIP());
-
-        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode())) {
-            $errorMsg[] = sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod());
-            $redirectErrorURL = "humm/checkout/error";
-        }
-
-        if (!$isValid) {
-            $errorMsg[] = sprintf("Possible site forgery detected: invalid response signature transactionId:[%s]", $transactionId);
-            if (!empty($redirectErrorURL))
-                $redirectErrorURL = "humm/checkout/error";
-        }
-
-        if (!$orderId) {
-            $errorMsg[] = sprintf("Humm returned a null order id. This may indicate an issue with the humm payment gateway.");
-            if (!empty($redirectErrorURL))
-                $redirectErrorURL = "humm/checkout/error";
-        }
-        if (!$order) {
-            $errorMsg[] = sprintf("\"Humm returned an id for an order that could not be retrieved", $orderId);
-            if (!empty($redirectErrorURL))
-                $redirectErrorURL = "humm/checkout/error";
-        }
-        array_walk($mesg, function($eachMesg){
-            $this->getHummLogger()->log($eachMesg,true);
-        });
-
-        if ($redirectErrorURL) {
-            array_map(function($eachError){
-                $this->getHummLogger()->log($eachError);
-            },$errorMsg);
-            $this->_redirect($redirectErrorURL);
-            return;
-        }
-        if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
-            $this->_redirect('checkout/onepage/success', array('_secure' => false));
-            return;
-        }
-
-        if ($result == "failed" && $order->getState() === Order::STATE_CANCELED) {
-            $this->_redirect('checkout/onepage/failure', array('_secure' => false));
-            return;
-        }
-
-        return array($order,$transactionId,$result,$orderId);
     }
 }
