@@ -76,7 +76,6 @@ class CouponCode implements ObserverInterface
 
 
         $ruleIds = explode(',', $order->getAppliedRuleIds());
-        $this->_hummLogger->log(json_encode($ruleIds))      ;
         $ruleIds = array_unique($ruleIds);
 
         $ruleCustomer = null;
