@@ -3,4 +3,7 @@
     <event name="humm_payment_cancel">
         <observer name="stateCheck" instance="Humm\HummPaymentGateway\Model\Observer\CheckState" />
     </event>
+    <event name="humm_payment_coupon_cancel">
+        <observer name="stateCheck" instance="Humm\HummPaymentGateway\Model\Observer\CouponCode" />
+    </event>
 </config>

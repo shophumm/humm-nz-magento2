@@ -1,4 +1,7 @@
 <?php
+/**
+ *
+ */
 
 namespace Humm\HummPaymentGateway\Cron;
 
