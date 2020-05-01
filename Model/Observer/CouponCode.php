@@ -1,13 +1,14 @@
 <?php
-/**
- *
- */
-
 namespace Humm\HummPaymentGateway\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
 use Humm\HummPaymentGateway\Helper\HummLogger;
+
+/**
+ * Class CouponCode
+ * @package Humm\HummPaymentGateway\Model\Observer
+ */
 
 class CouponCode implements ObserverInterface
 {
@@ -68,9 +69,10 @@ class CouponCode implements ObserverInterface
     public function execute(EventObserver $observer)
     {
         $order = $observer->getEvent()->getOrder();
-        $this->_hummLogger->log(sprintf("[Order Id:%s]:Cancel Coupon Code:]", json_encode($order->getId())));
+        $this->_hummLogger->log(sprintf("[Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
 
         if (!$order || !$order->getAppliedRuleIds()) {
+            $this->_hummLogger->log(sprintf("[Order Id:%s]:Cancel Coupon:]", json_encode($order->getId())));
             return $this;
         }
 

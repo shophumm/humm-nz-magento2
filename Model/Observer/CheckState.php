@@ -37,7 +37,8 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
         try {
             $order = $observer->getData('order');
             $type = $observer->getData('type');
-            $this->_hummLogger->log("Cancel Transaction:log cancel in Observer Section" . $order->getId() . 'type=' . $type);
+            $this->_hummLogger->log(sprintf("[Order Id:%s] [Type :%s]",$order->getId(),$type));
+
             if ($order->getId() && $order->getState() != Order::STATE_CANCELED) {
                 $order->registerCancellation('This order is cancelled by customer Humm Payment')->save();
             }
