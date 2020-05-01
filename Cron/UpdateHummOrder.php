@@ -161,7 +161,7 @@ class UpdateHummOrder
 
         if ($hummOrder->getAppliedRuleIds()) {
             $this->_hummlogger->log(sprintf("Begin Cron functions [OrderId:%s] Coupon [Ids:%s]", $hummOrderId, json_encode($hummOrder->getAppliedRuleIds())));
-            $hummProcess = $objectManager->create('Humm\HummPaymentGateway\Model\Observer\CouponCode')->ProcessCoupon($hummOrder);
+            $objectManager->create('\Humm\HummPaymentGateway\Model\Observer\CouponCode')->ProcessCoupon($hummOrder);
         }
 
         if ($hummOrder->getId() && $hummOrder->getState() != Order::STATE_CANCELED) {

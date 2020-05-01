@@ -67,7 +67,7 @@ class CouponCode implements ObserverInterface
     public function execute(EventObserver $observer)
     {
         $order = $observer->getEvent()->getOrder();
-        $this->_hummLogger->log(sprintf("[Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
+        $this->_hummLogger->log(sprintf("Cancel Coupon End: [Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
 
         if (!$order || !$order->getAppliedRuleIds()) {
             $this->_hummLogger->log(sprintf("[Error Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
@@ -81,6 +81,8 @@ class CouponCode implements ObserverInterface
         $ruleCustomer = null;
         $customerId = $order->getCustomerId();
 
+
+
         foreach ($ruleIds as $ruleId) {
             if (!$ruleId) {
                 continue;
@@ -122,6 +124,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
+        $this->_hummLogger->log(sprintf("End Button Cancel Coupon End: [%s] CustomerId[%s] ",json_encode($ruleIds), $customerId));
 
         return $this;
     }
@@ -135,11 +138,13 @@ class CouponCode implements ObserverInterface
 
         $this->_hummLogger->log(sprintf("[Cron Coupon (Order Id:%s)]",$order->getId()));
 
+
         $ruleIds = explode(',', $order->getAppliedRuleIds());
         $ruleIds = array_unique($ruleIds);
 
         $ruleCustomer = null;
         $customerId = $order->getCustomerId();
+        $this->_hummLogger->log(json_encode($ruleIds),true);
 
         foreach ($ruleIds as $ruleId) {
             if (!$ruleId) {
@@ -182,7 +187,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
-
-        return $this;
+        $this->_hummLogger->log(sprintf("[END Cron Coupon (Order Id:%s)]",$order->getId()));
+        return true;
     }
 }
