@@ -22,7 +22,9 @@ class Cancel extends AbstractAction
         $this->getHummLogger()->log('Requested order cancellation by customer. OrderId&QuoteId: ' . $order->getId() . $order->getQuoteId());
         try {
             $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => 'button']);
-            $this->_eventManager->dispatch('humm_payment_coupon_cancel', ['order' => $order, 'type' => 'button']);
+            if ($order->getAppliedRuleIds()) {
+                $this->_eventManager->dispatch('humm_payment_coupon_cancel', ['order' => $order, 'type' => 'button']);
+            }
             $this->getHummLogger()->log(sprintf('Begin Cancel: [Order Id: %s] for humm_payment_cancel info and humm_payment_coupon_cancel' , $orderId));
             $this->getMessageManager()->addWarningMessage(__("You have cancelled your humm payment. Please Check"));
         } catch (\Exception $e) {
