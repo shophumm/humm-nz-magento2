@@ -15,7 +15,7 @@
                     <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="Humm_order_grid.grid.columnSet" as="grid.columnSet">
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="entity_id">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">entity_id</argument>
+                                <argument name="header" xsi:type="string" translate="true">Entity_id</argument>
                                 <argument name="index" xsi:type="string">entity_id</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
@@ -24,7 +24,7 @@
                         </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="order_id">
                         <arguments>
-                        <argument name="header" xsi:type="string" translate="true">increment_id</argument>
+                        <argument name="header" xsi:type="string" translate="true">OrderID</argument>
                         <argument name="index" xsi:type="string">increment_id</argument>
                         <argument name="type" xsi:type="string">text</argument>
                         <argument name="column_css_class" xsi:type="string">col-id</argument>
@@ -42,7 +42,7 @@
                         </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="Order-Status">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">status</argument>
+                                <argument name="header" xsi:type="string" translate="true">Status</argument>
                                 <argument name="index" xsi:type="string">status</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
@@ -51,17 +51,16 @@
                         </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="additional-data">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">additional_information</argument>
+                                <argument name="header" xsi:type="string" translate="true">Status Information</argument>
                                 <argument name="index" xsi:type="string">additional_information</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
                                 <argument name="header_css_class" xsi:type="string">col-id</argument>
                             </arguments>
                         </block>
-                        hhhhh
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="created_at">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">created_at</argument>
+                                <argument name="header" xsi:type="string" translate="true">Created_at</argument>
                                 <argument name="index" xsi:type="string">created_at</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>
@@ -70,7 +69,7 @@
                         </block>
                         <block class="Magento\Backend\Block\Widget\Grid\Column" as="amount_paid">
                             <arguments>
-                                <argument name="header" xsi:type="string" translate="true">amount_paid</argument>
+                                <argument name="header" xsi:type="string" translate="true">Amount_paid</argument>
                                 <argument name="index" xsi:type="string">amount_paid</argument>
                                 <argument name="type" xsi:type="string">text</argument>
                                 <argument name="column_css_class" xsi:type="string">col-id</argument>

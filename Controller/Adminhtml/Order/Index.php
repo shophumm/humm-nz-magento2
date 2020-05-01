@@ -22,7 +22,7 @@ class Index extends \Magento\Backend\App\Action
     {
 
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend((__('Humm Orders Status')));
+        $resultPage->getConfig()->getTitle()->prepend((__('Humm Orders Status Change History')));
         return $resultPage;
     }
 
