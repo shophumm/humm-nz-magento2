@@ -9,7 +9,6 @@ use Humm\HummPaymentGateway\Helper\HummLogger;
  * Class CouponCode
  * @package Humm\HummPaymentGateway\Model\Observer
  */
-
 class CouponCode implements ObserverInterface
 {
     /**
@@ -60,7 +59,6 @@ class CouponCode implements ObserverInterface
         $this->_couponUsage = $couponUsage;
 
     }
-
     /**
      * @param EventObserver $observer
      * @return $this|void
@@ -72,10 +70,70 @@ class CouponCode implements ObserverInterface
         $this->_hummLogger->log(sprintf("[Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
 
         if (!$order || !$order->getAppliedRuleIds()) {
-            $this->_hummLogger->log(sprintf("[Order Id:%s]:Cancel Coupon:]", json_encode($order->getId())));
+            $this->_hummLogger->log(sprintf("[Error Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
             return $this;
         }
 
+
+        $ruleIds = explode(',', $order->getAppliedRuleIds());
+        $ruleIds = array_unique($ruleIds);
+
+        $ruleCustomer = null;
+        $customerId = $order->getCustomerId();
+
+        foreach ($ruleIds as $ruleId) {
+            if (!$ruleId) {
+                continue;
+            }
+            /** @var \Magento\SalesRule\Model\Rule $rule */
+            $rule = $this->_ruleFactory->create();
+            $rule->load($ruleId);
+            if ($rule->getId()) {
+                $rule->loadCouponCode();
+                if ($rule->getTimesUsed() > 0) {
+                    $rule->setTimesUsed($rule->getTimesUsed() - 1);
+                    $rule->save();
+                }
+
+                if ($customerId) {
+                    /** @var \Magento\SalesRule\Model\Rule\Customer $ruleCustomer */
+                    $ruleCustomer = $this->_ruleCustomerFactory->create();
+                    $ruleCustomer->loadByCustomerRule($customerId, $ruleId);
+
+                    if ($ruleCustomer->getId()) {
+                        if ($ruleCustomer->getTimesUsed() > 0) {
+                            $ruleCustomer->setTimesUsed($ruleCustomer->getTimesUsed() - 1);
+                        }
+                    } else {
+                        $ruleCustomer->setCustomerId($customerId)->setRuleId($ruleId)->setTimesUsed(0);
+                    }
+                    $ruleCustomer->save();
+                }
+            }
+        }
+
+        $this->_coupon->load($order->getCouponCode(), 'code');
+        if ($this->_coupon->getId()) {
+            if ($this->_coupon->getTimesUsed() > 0) {
+                $this->_coupon->setTimesUsed($this->_coupon->getTimesUsed() - 1);
+                $this->_coupon->save();
+            }
+            if ($customerId) {
+                $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
+            }
+        }
+
+        return $this;
+    }
+
+    public function ProcessCoupon($order)
+    {
+
+        if (!$order || !$order->getAppliedRuleIds()) {
+            return $this;
+        }
+
+        $this->_hummLogger->log(sprintf("[Cron Coupon (Order Id:%s)]",$order->getId()));
 
         $ruleIds = explode(',', $order->getAppliedRuleIds());
         $ruleIds = array_unique($ruleIds);

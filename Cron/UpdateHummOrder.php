@@ -142,7 +142,7 @@ class UpdateHummOrder
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($collection as $key => $item) {
-            $this->_hummlogger->log(sprintf("OrderID %s, State %s, Status %s", $item->getData('increment_id'), $item->getData('state'), $item->getData('status')), true);
+            $this->_hummlogger->log(sprintf("ID %s OrderID %s, State %s, Status %s",$item->getData('entity_id'),$item->getData('increment_id'), $item->getData('state'), $item->getData('status')), true);
             $hummOrderId = $item->getData('increment_id');
             $this->processHummOrder($hummOrderId, $objectManager);
         }
@@ -161,7 +161,7 @@ class UpdateHummOrder
 
         if ($hummOrder->getAppliedRuleIds()) {
             $this->_hummlogger->log(sprintf("Begin Cron functions [OrderId:%s] Coupon [Ids:%s]", $hummOrderId, json_encode($hummOrder->getAppliedRuleIds())));
-                 $this->_eventManager->dispatch('humm_payment_coupon_cancel', ['order' => $hummOrder, 'type' => 'Cron']);
+            $hummProcess = $objectManager->create('Humm\HummPaymentGateway\Model\Observer\CouponCode')->ProcessCoupon($hummOrder);
         }
 
         if ($hummOrder->getId() && $hummOrder->getState() != Order::STATE_CANCELED) {
