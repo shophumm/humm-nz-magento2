@@ -124,7 +124,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
-        $this->_hummLogger->log(sprintf("End Button Cancel Coupon End: [%s] CustomerId[%s] ",json_encode($ruleIds), $customerId));
+        $this->_hummLogger->log(sprintf("End for Cancel Coupon End: [%s] CustomerId[%s] ",json_encode($ruleIds), $customerId));
 
         return $this;
     }
