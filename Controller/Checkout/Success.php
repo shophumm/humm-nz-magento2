@@ -54,8 +54,8 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
             } catch (\Exception $e) {
                 $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
-            }
-            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+             }
+                $this->_redirect('checkout/onepage/success', array('_secure' => false));
         } else {
             $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => $result]);
             $this->getHummLogger()->log('humm_payment_cancel' . $orderId);
@@ -86,7 +86,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         array_push($mesg, sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         array_push($mesg, sprintf("Client IP: %s", $this->getClientIP()));
 
-        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode())) {
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber())) {
             array_push($errorMsg, sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         }
 
