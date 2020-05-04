@@ -50,7 +50,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                     $this->invoiceOrder($order, $transactionId);
                     $this->getHummLogger()->log("Humm invoice produced:" . $orderId);
                 }
-                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s]", $orderId, $orderState, $orderStatus));
+                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s] [ProtectCode:%s]", $orderId, $orderState, $orderStatus,$order->getProtectCode()));
                 $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
             } catch (\Exception $e) {
                 $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
