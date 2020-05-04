@@ -136,7 +136,7 @@ class CouponCode implements ObserverInterface
             return $this;
         }
 
-        $this->_hummLogger->log(sprintf("[Cron Code for Cancel Coupon (Order Id:%s)]",$order->getId()));
+        $this->_hummLogger->log(sprintf("[Cron functions for Cancel Coupon (Order Id:%s)]",$order->getId()));
 
 
         $ruleIds = explode(',', $order->getAppliedRuleIds());
@@ -186,7 +186,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
-        $this->_hummLogger->log(sprintf("[END Cron Code for canceling  Coupon (Order Id:%s)]",$order->getId()));
+        $this->_hummLogger->log(sprintf("[END Cron functions for canceling  Coupon (Order Id:%s)]",$order->getId()));
         return true;
     }
 }

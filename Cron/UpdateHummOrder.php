@@ -129,7 +129,7 @@ class UpdateHummOrder
             'created_at',
             'desc'
         );
-        $this->_hummlogger->log(sprintf("Cron Query %s", $collection->getSelect()->__toString()), true);
+        $this->_hummlogger->log(sprintf("Cron Functions Query %s", $collection->getSelect()->__toString()), true);
         return $collection;
 
     }
@@ -142,7 +142,7 @@ class UpdateHummOrder
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($collection as $key => $item) {
-            $this->_hummlogger->log(sprintf("ID %s OrderID %s, State %s, Status %s", $item->getData('entity_id'), $item->getData('increment_id'), $item->getData('state'), $item->getData('status')), true);
+            $this->_hummlogger->log(sprintf("Cron: ID %s OrderID %s, State %s, Status %s", $item->getData('entity_id'), $item->getData('increment_id'), $item->getData('state'), $item->getData('status')), true);
             $hummOrderId = $item->getData('increment_id');
             $this->processHummOrder($hummOrderId, $objectManager);
         }
@@ -160,7 +160,7 @@ class UpdateHummOrder
         $hummOrder = $objectManager->create('\Magento\Sales\Model\Order')->loadByIncrementId($hummOrderId);
 
         if ($hummOrder->getAppliedRuleIds()) {
-            $this->_hummlogger->log(sprintf("Begin Cron functions [OrderId:%s] Coupon [Ids:%s]", $hummOrderId, json_encode($hummOrder->getAppliedRuleIds())));
+            $this->_hummlogger->log(sprintf("Begin Cron Coupon functions [OrderId:%s] Coupon [Ids:%s]", $hummOrderId, json_encode($hummOrder->getAppliedRuleIds())));
             $objectManager->create('\Humm\HummPaymentGateway\Model\Observer\CouponCode')->ProcessCoupon($hummOrder);
         }
 
@@ -170,7 +170,7 @@ class UpdateHummOrder
             $AdditionalInformationNew = array_merge($AdditionalInformation, [$hummOrderId => sprintf("Update Humm Pending OrderId %s to Cancelled", $hummOrderId)]);
             $this->_hummlogger->log(sprintf("Additional %s ", json_encode($AdditionalInformationNew)));
             $hummPayment->setAdditionalInformation($AdditionalInformationNew);
-            $hummOrder->registerCancellation('cancelled by customer Cron Humm Payment ')->save();
+            $hummOrder->registerCancellation('Cancelled by customer Cron Humm Payment ')->save();
         }
 
     }
