@@ -71,7 +71,6 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 
     public function ValidateCallback()
     {
-
         $params = $this->getRequest()->getParams();
         $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
         $result = $params['x_result'];
@@ -86,7 +85,13 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
         array_push($mesg, sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         array_push($mesg, sprintf("Client IP: %s", $this->getClientIP()));
 
-        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber())) {
+        if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
+            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+            $this->getHummLogger()->log(sprintf("Begin  [Order id%s ] State is %s leave now ..",$orderId,$order->getState()));
+            return;
+        }
+
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode()) ) {
             array_push($errorMsg, sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         }
 
@@ -113,10 +118,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
             $this->_redirect($redirectErrorURL);
             return;
         }
-        if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
-            $this->_redirect('checkout/onepage/success', array('_secure' => false));
-            return;
-        }
+
 
         if ($result == "failed" && $order->getState() === Order::STATE_CANCELED) {
             $this->_redirect('checkout/onepage/failure', array('_secure' => false));
