@@ -91,7 +91,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
             return;
         }
 
-        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber()) || ($hummProtectCode != $order->getProtectCode()) ) {
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber())) {
             array_push($errorMsg, sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
         }
 

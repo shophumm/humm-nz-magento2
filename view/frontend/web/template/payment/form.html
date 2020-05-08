@@ -11,8 +11,8 @@
                name="payment[method]"
                type="radio"/>
         <label class="label" data-bind="attr: {'for': getCode()}">
+            <span data-bind="text: getTitle()"></span>
             <img class="payment-icon" data-bind="attr: {src: getHummLogo(), alt: $t('Logo')}" style="height: 30px;"/>
-            <!--<span data-bind="text: getTitle()"></span>-->
         </label>
     </div>
 

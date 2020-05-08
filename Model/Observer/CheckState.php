@@ -6,6 +6,7 @@ use Humm\HummPaymentGateway\Controller\Checkout\AbstractAction;
 use Humm\HummPaymentGateway\Helper\HummLogger;
 use Magento\Framework\Event\Observer;
 use Magento\Sales\Model\Order;
+use Magento\Checkout\Model\Session;
 
 
 /**
@@ -21,12 +22,18 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
     protected $_hummLogger;
 
     /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $_session;
+
+    /**
      * CheckState constructor.
      * @param HummLogger $hummLogger
      */
-    public function __construct(HummLogger $hummLogger)
+    public function __construct(Session $session, HummLogger $hummLogger)
     {
         $this->_hummLogger = $hummLogger;
+        $this->_session =    $session;
     }
 
     /**
@@ -40,9 +47,9 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
             $this->_hummLogger->log(sprintf("Cancel Order [Order Id:%s] [Type :%s]",$order->getId(),$type));
 
             if ($order->getId() && $order->getState() != Order::STATE_CANCELED) {
+                $this->_session->restoreQuote();
                 $order->registerCancellation('This order is cancelled by customer Humm Payment')->save();
             }
-
         } catch (\Exception $e) {
             $this->_hummLogger->log('Cancel Order error:' . $e->getCode() . '->' . $e->getMessage() . 'type=' . $type);
 
