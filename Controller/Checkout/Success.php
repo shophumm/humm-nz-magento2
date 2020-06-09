@@ -19,9 +19,16 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
      */
     public function execute()
     {
-        list($order, $transactionId, $result, $orderId) = $this->ValidateCallback();
-
-        if ($result == "completed") {
+        list($order, $transactionId, $result, $orderId, $orderState, $errMsg) = $this->ValidateCallback();
+        if ($orderState == Order::STATE_PROCESSING) {
+            $this->getHummLogger()->log(sprintf("Spare Code End:%s  %s", $result, $orderState), true);
+            return;
+        }
+        if (count($errMsg)) {
+            $this->getHummLogger()->log(sprintf("End by error %s",json_encode($errMsg)),true);
+            return;
+        }
+        if ($result == "completed" && $orderState != Order::STATE_CANCELED) {
             $orderState = Order::STATE_PROCESSING;
             try {
                 $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
@@ -50,17 +57,18 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                     $this->invoiceOrder($order, $transactionId);
                     $this->getHummLogger()->log("Humm invoice produced:" . $orderId);
                 }
-                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s] [ProtectCode:%s]", $orderId, $orderState, $orderStatus,$order->getProtectCode()));
+                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s] [ProtectCode:%s]", $orderId, $orderState, $orderStatus, $order->getProtectCode()));
                 $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
             } catch (\Exception $e) {
                 $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
-             }
-                $this->_redirect('checkout/onepage/success', array('_secure' => false));
-        } else {
+            }
+            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+        } elseif ( $result == "failed" && $orderState != Order::STATE_CANCELED ) {
+            $this->_eventManager->dispatch('humm_payment_coupon_cancel', ['order' => $order, 'type' => $result]);
+            $this->getHummLogger()->log('humm_payment_coupon_cancel ' . $orderId);
             $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => $result]);
-            $this->getHummLogger()->log('humm_payment_cancel' . $orderId);
+            $this->getHummLogger()->log('humm_payment_cancel ' . $orderId);
             $this->getMessageManager()->addWarningMessage(__("humm payment is unsuccessful. Please Check"));
-            $this->getMessageManager()->addErrorMessage(__("There was an error in the humm payment"));
             $this->_redirect('checkout/cart', array('_secure' => false));
         }
     }
@@ -87,8 +95,7 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
 
         if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
             $this->_redirect('checkout/onepage/success', array('_secure' => false));
-            $this->getHummLogger()->log(sprintf("Begin  [Order id%s ] State is %s leave now ..",$orderId,$order->getState()));
-            return;
+            $this->getHummLogger()->log(sprintf("Begin  [Order id%s ] State is %s leave now ..", $orderId, $order->getState()));
         }
 
         if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber())) {
@@ -116,16 +123,12 @@ class Success extends AbstractAction implements CsrfAwareActionInterface
                 $this->getHummLogger()->log($eachError);
             }, $errorMsg);
             $this->_redirect($redirectErrorURL);
-            return;
         }
-
-
-        if ($result == "failed" && $order->getState() === Order::STATE_CANCELED) {
-            $this->_redirect('checkout/onepage/failure', array('_secure' => false));
-            return;
+        if ($result == "failed" && $order->getState() == Order::STATE_CANCELED) {
+            $this->getMessageManager()->addErrorMessage(__("There was an error in the humm payment"));
+            $this->_redirect('checkout/cart', array('_secure' => false));
         }
-
-        return array($order, $transactionId, $result, $orderId);
+        return array($order, $transactionId, $result, $orderId, $order->getState(), $errorMsg);
     }
 
     /**
