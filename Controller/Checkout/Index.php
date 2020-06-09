@@ -63,7 +63,7 @@ class Index extends AbstractAction
 
         $data = array(
             'x_currency' => $order->getOrderCurrencyCode(),
-//          'x_url_callback' => $this->getDataHelper()->getCompleteUrl(),
+            'x_url_callback' => $this->getDataHelper()->getCompleteUrl(),
             'x_url_complete' => $this->getDataHelper()->getCompleteUrl(),
             'x_url_cancel' => $this->getDataHelper()->getCancelledUrl($orderId),
             'x_shop_name' => $this->getDataHelper()->getStoreCode(),

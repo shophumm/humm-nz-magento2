@@ -1,4 +1,5 @@
 <?php
+
 namespace Humm\HummPaymentGateway\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;
@@ -59,6 +60,7 @@ class CouponCode implements ObserverInterface
         $this->_couponUsage = $couponUsage;
 
     }
+
     /**
      * @param EventObserver $observer
      * @return $this|void
@@ -67,10 +69,10 @@ class CouponCode implements ObserverInterface
     public function execute(EventObserver $observer)
     {
         $order = $observer->getEvent()->getOrder();
-        $this->_hummLogger->log(sprintf("Cancel Coupon End: [Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
+        $this->_hummLogger->log(sprintf("Cancel Coupon End: [Order Id:%s] [Type :%s]", $order->getIncrementId(), $observer->getEvent()->getType()));
 
         if (!$order || !$order->getAppliedRuleIds()) {
-            $this->_hummLogger->log(sprintf("[Error Order Id:%s] [Type :%s]",$order->getId(),$observer->getEvent()->getType()));
+            $this->_hummLogger->log(sprintf("[No Coupon but order Id:%s]  [Type :%s]", $order->getIncrementId(), $observer->getEvent()->getType()));
             return $this;
         }
 
@@ -80,7 +82,6 @@ class CouponCode implements ObserverInterface
 
         $ruleCustomer = null;
         $customerId = $order->getCustomerId();
-
 
 
         foreach ($ruleIds as $ruleId) {
@@ -124,7 +125,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
-        $this->_hummLogger->log(sprintf("End for Cancel Button for cancel Coupon: [%s] CustomerId[%s] ",json_encode($ruleIds), $customerId));
+        $this->_hummLogger->log(sprintf("End for Cancel Button for cancel Coupon: [%s] CustomerId[%s] ", json_encode($ruleIds), $customerId));
 
         return $this;
     }
@@ -136,7 +137,7 @@ class CouponCode implements ObserverInterface
             return $this;
         }
 
-        $this->_hummLogger->log(sprintf("[Cron functions for Cancel Coupon (Order Id:%s)]",$order->getId()));
+        $this->_hummLogger->log(sprintf("[Cron functions for Cancel Coupon (Order Id:%s)]", $order->getIncrementId()));
 
 
         $ruleIds = explode(',', $order->getAppliedRuleIds());
@@ -158,7 +159,6 @@ class CouponCode implements ObserverInterface
                     $rule->setTimesUsed($rule->getTimesUsed() - 1);
                     $rule->save();
                 }
-
                 if ($customerId) {
                     /** @var \Magento\SalesRule\Model\Rule\Customer $ruleCustomer */
                     $ruleCustomer = $this->_ruleCustomerFactory->create();
@@ -186,7 +186,7 @@ class CouponCode implements ObserverInterface
                 $this->_couponUsage->updateCustomerCouponTimesUsed($customerId, $this->_coupon->getId(), false);
             }
         }
-        $this->_hummLogger->log(sprintf("[END Cron functions for canceling  Coupon (Order Id:%s)]",$order->getId()));
+        $this->_hummLogger->log(sprintf("[END Cron functions for canceling  Coupon (Order Id:%s)]", $order->getIncrementId()));
         return true;
     }
 }

@@ -19,7 +19,7 @@ class Cancel extends AbstractAction
     {
         $orderId = $this->getRequest()->get('orderId');
         $order = $orderId ? $this->getOrderById($orderId) : false;
-        $this->getHummLogger()->log(sprintf(sprintf('Start Cancel= [OrderId: %s ]: [QuoteId:%s] ' ,$order->getId() ,$order->getQuoteId())));
+        $this->getHummLogger()->log(sprintf(sprintf('Start Cancel[OrderId: %s ]',$order->getIncrementId())));
         try {
             $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => 'button']);
             if ($order->getAppliedRuleIds()) {

@@ -10,6 +10,7 @@ use Magento\Framework\App\RequestInterface;
 /**
  * roger.bi@flexigroup.com.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
+ * @ update for new version
  */
 class Success extends AbstractAction implements CsrfAwareActionInterface
 {

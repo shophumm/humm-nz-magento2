@@ -33,7 +33,7 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
     public function __construct(Session $session, HummLogger $hummLogger)
     {
         $this->_hummLogger = $hummLogger;
-        $this->_session =    $session;
+        $this->_session = $session;
     }
 
     /**
@@ -44,7 +44,7 @@ class CheckState implements \Magento\Framework\Event\ObserverInterface
         try {
             $order = $observer->getData('order');
             $type = $observer->getData('type');
-            $this->_hummLogger->log(sprintf("Cancel Order [Order Id:%s] [Type :%s]",$order->getId(),$type));
+            $this->_hummLogger->log(sprintf("Cancel Order [Order Id:%s] [Type :%s]", $order->getIncrementId(), $type));
 
             if ($order->getId() && $order->getState() != Order::STATE_CANCELED) {
                 $this->_session->restoreQuote();
