@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!-- Payment Method Facade configuration -->
     <virtualType name="HummPaymentGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
@@ -16,6 +17,19 @@
             <argument name="commandPool" xsi:type="object">HummPaymentGatewayCommandPool</argument>
         </arguments>
     </virtualType>
+
+    <type name="Humm\HummPaymentGateway\Helper\HummLogger">
+        <arguments>
+            <argument name="hummPaymentLogger" xsi:type="object">HummLogger</argument>
+        </arguments>
+    </type>
+
+
+    <type name="Humm\HummPaymentGateway\Block\Error">
+        <arguments>
+            <argument name="config" xsi:type="object">Humm\HummPaymentGateway\Gateway\Config\Config</argument>
+        </arguments>
+    </type>
 
     <!-- Configuration reader -->
     <type name="Humm\HummPaymentGateway\Gateway\Config\Config">
@@ -38,8 +52,11 @@
     <virtualType name="HummPaymentGatewayInitializeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">HummPaymentGatewayInitializationRequest</argument>
-            <argument name="transferFactory" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\DummyTransferFactory</argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR!Cannot instantiate interface Magento\Payment\Gateway\Http\TransferFactoryInterface if empty -->
-            <argument name="client" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\Client\DummyClient</argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR getting command!Cannot instantiate interface Magento\Payment\Gateway\Http\ClientInterface if empty-->
+            <argument name="transferFactory" xsi:type="object">
+                Humm\HummPaymentGateway\Gateway\Http\DummyTransferFactory
+            </argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR!Cannot instantiate interface Magento\Payment\Gateway\Http\TransferFactoryInterface if empty -->
+            <argument name="client" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\Client\DummyClient
+            </argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR getting command!Cannot instantiate interface Magento\Payment\Gateway\Http\ClientInterface if empty-->
         </arguments>
     </virtualType>
 
@@ -47,9 +64,12 @@
     <virtualType name="HummPaymentGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">HummPaymentGatewayRefundRequest</argument>
-            <argument name="transferFactory" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\DummyTransferFactory</argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR!Cannot instantiate interface Magento\Payment\Gateway\Http\TransferFactoryInterface if empty -->
+            <argument name="transferFactory" xsi:type="object">
+                Humm\HummPaymentGateway\Gateway\Http\DummyTransferFactory
+            </argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR!Cannot instantiate interface Magento\Payment\Gateway\Http\TransferFactoryInterface if empty -->
             <argument name="handler" xsi:type="object">Humm\HummPaymentGateway\Model\HummPayment</argument>
-            <argument name="client" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\Client\RefundClient</argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR getting command!Cannot instantiate interface Magento\Payment\Gateway\Http\ClientInterface if empty-->
+            <argument name="client" xsi:type="object">Humm\HummPaymentGateway\Gateway\Http\Client\RefundClient
+            </argument> <!-- [Payment/Model/Method/Adapter][executeCommand]ERROR getting command!Cannot instantiate interface Magento\Payment\Gateway\Http\ClientInterface if empty-->
         </arguments>
     </virtualType>
 
@@ -57,7 +77,9 @@
     <virtualType name="HummPaymentGatewayInitializationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="transaction" xsi:type="string">Humm\HummPaymentGateway\Gateway\Request\InitializationRequest</item>
+                <item name="transaction" xsi:type="string">
+                    Humm\HummPaymentGateway\Gateway\Request\InitializationRequest
+                </item>
             </argument>
         </arguments>
     </virtualType>
@@ -74,6 +96,14 @@
     <type name="Humm\HummPaymentGateway\Gateway\Request\InitializationRequest">
         <arguments>
             <argument name="config" xsi:type="object">Humm\HummPaymentGateway\Gateway\Config\Config</argument>
+        </arguments>
+    </type>
+
+    <type name="Humm\HummPaymentGateway\Block\Advert\AbstractAdvert">
+        <arguments>
+            <argument name="config" xsi:type="object">Humm\HummPaymentGateway\Gateway\Config\Config</argument>
+            <argument name="register" xsi:type="object">\Magento\Framework\Registry</argument>
+            <argument name="hummLogger" xsi:type="object">Humm\HummPaymentGateway\Helper\HummLogger</argument>
         </arguments>
     </type>
 
@@ -101,4 +131,17 @@
         <plugin name="Humm-OrderSender-Plugin" type="Humm\HummPaymentGateway\Plugin\OrderSenderPlugin"/>
     </type>
 
+    <virtualType name="HummLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">Humm\HummPaymentGateway\Logger\HummPaymentHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Humm_HummPaymentGateway\Model\Observer\CheckState">
+        <arguments>
+            <argument name="hummLogger" xsi:type="object">Humm\HummPaymentGateway\Helper\HummLogger</argument>
+        </arguments>
+    </type>
 </config>
