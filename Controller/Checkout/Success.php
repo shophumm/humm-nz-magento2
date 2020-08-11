@@ -3,135 +3,211 @@
 namespace Humm\HummPaymentGateway\Controller\Checkout;
 
 use Magento\Sales\Model\Order;
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
 
 /**
+ * roger.bi@flexigroup.com.au
  * @package Humm\HummPaymentGateway\Controller\Checkout
+ * @ update for new version
  */
-class Success extends AbstractAction {
-
-    public function execute() {
-        $isValid       = $this->getCryptoHelper()->isValidSignature( $this->getRequest()->getParams(), $this->getGatewayConfig()->getApiKey() );
-        $result        = $this->getRequest()->get( "x_result" );
-        $orderId       = $this->getRequest()->get( "x_reference" );
-        $transactionId = $this->getRequest()->get( "x_gateway_reference" );
-
-        if ( ! $isValid ) {
-            $this->getLogger()->debug( 'Possible site forgery detected: invalid response signature.' );
-            $this->_redirect( 'checkout/onepage/error', array( '_secure' => false ) );
-
+class Success extends AbstractAction implements CsrfAwareActionInterface
+{
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @throws \Exception
+     */
+    public function execute()
+    {
+        list($order, $transactionId, $result, $orderId, $orderState, $errMsg) = $this->ValidateCallback();
+        if ($orderState == Order::STATE_PROCESSING) {
+            $this->getHummLogger()->log(sprintf("Spare Code End:%s  %s", $result, $orderState), true);
             return;
         }
-
-        if ( ! $orderId ) {
-            $this->getLogger()->debug( "Humm returned a null order id. This may indicate an issue with the humm payment gateway." );
-            $this->_redirect( 'checkout/onepage/error', array( '_secure' => false ) );
-
+        if (count($errMsg)) {
+            $this->getHummLogger()->log(sprintf("End by error %s",json_encode($errMsg)),true);
             return;
         }
-
-        $order = $this->getOrderById( $orderId );
-        if ( ! $order ) {
-            $this->getLogger()->debug( "Humm returned an id for an order that could not be retrieved: $orderId" );
-            $this->_redirect( 'checkout/onepage/error', array( '_secure' => false ) );
-
-            return;
-        }
-
-        if ( $result == "completed" && $order->getState() === Order::STATE_PROCESSING ) {
-            $this->_redirect( 'checkout/onepage/success', array( '_secure' => false ) );
-
-            return;
-        }
-
-        if ( $result == "failed" && $order->getState() === Order::STATE_CANCELED ) {
-            $this->_redirect( 'checkout/onepage/failure', array( '_secure' => false ) );
-
-            return;
-        }
-
-        if ( $result == "completed" ) {
+        if ($result == "completed" && $orderState != Order::STATE_CANCELED) {
             $orderState = Order::STATE_PROCESSING;
+            try {
+                $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
+                if (!$this->statusExists($orderStatus)) {
+                    $orderStatus = $order->getConfig()->getStateDefaultStatus($orderState);
+                }
+                $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
+                $order->setState($orderState)
+                    ->setStatus($orderStatus)
+                    ->addStatusHistoryComment("Humm authorisation success. Transaction #$transactionId")
+                    ->setIsCustomerNotified($emailCustomer);
 
-            $orderStatus = $this->getGatewayConfig()->getHummApprovedOrderStatus();
-            if ( ! $this->statusExists( $orderStatus ) ) {
-                $orderStatus = $order->getConfig()->getStateDefaultStatus( $orderState );
+                $payment = $order->getPayment();
+                $payment->setTransactionId($transactionId);
+                $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true);
+                $AdditionalNew = array_merge($payment->getAdditionalInformation(),
+                    ["result" => sprintf(("Method :[%s] Result :[%s]"), $this->getRequest()->getMethod(), $result)]
+                );
+                $payment->setAdditionalInformation($AdditionalNew);;
+                $order->save();
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
+                $emailSender->send($order);
+                $invoiceAutomatically = $this->getGatewayConfig()->isAutomaticInvoice();
+                if ($invoiceAutomatically) {
+                    $this->invoiceOrder($order, $transactionId);
+                    $this->getHummLogger()->log("Humm invoice produced:" . $orderId);
+                }
+                $this->getHummLogger()->log(sprintf("END Payment:[OrderID:%s] [State:%s] [Status:%s] [ProtectCode:%s]", $orderId, $orderState, $orderStatus, $order->getProtectCode()));
+                $this->getMessageManager()->addSuccessMessage(__("Your payment with humm is complete"));
+            } catch (\Exception $e) {
+                $this->getHummLogger()->log("Successful Update State/Status Error:" . $e->getMessage());
             }
-
-            $emailCustomer = $this->getGatewayConfig()->isEmailCustomer();
-
-            $order->setState( $orderState )
-                  ->setStatus( $orderStatus )
-                  ->addStatusHistoryComment( "Humm authorisation success. Transaction #$transactionId" )
-                  ->setIsCustomerNotified( $emailCustomer );
-
-            $payment = $order->getPayment();
-            $payment->setTransactionId( $transactionId );
-            $payment->addTransaction( \Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE, null, true );
-            $order->save();
-
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $emailSender   = $objectManager->create( '\Magento\Sales\Model\Order\Email\Sender\OrderSender' );
-            $emailSender->send( $order );
-
-            $invoiceAutomatically = $this->getGatewayConfig()->isAutomaticInvoice();
-            if ( $invoiceAutomatically ) {
-                $this->invoiceOrder( $order, $transactionId );
-            }
-
-            $this->getMessageManager()->addSuccessMessage( __( "Your payment with humm is complete" ) );
-            $this->_redirect( 'checkout/onepage/success', array( '_secure' => false ) );
-        } else {
-            $this->getCheckoutHelper()->cancelCurrentOrder( "Order #" . ( $order->getId() ) . " was rejected by humm. Transaction #$transactionId." );
-            $this->getCheckoutHelper()->restoreQuote(); //restore cart
-            $this->getMessageManager()->addErrorMessage( __( "There was an error in the humm payment" ) );
-            $this->_redirect( 'checkout/cart', array( '_secure' => false ) );
+            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+        } elseif ( $result == "failed" && $orderState != Order::STATE_CANCELED ) {
+            $this->_eventManager->dispatch('humm_payment_coupon_cancel', ['order' => $order, 'type' => $result]);
+            $this->getHummLogger()->log('humm_payment_coupon_cancel ' . $orderId);
+            $this->_eventManager->dispatch('humm_payment_cancel', ['order' => $order, 'type' => $result]);
+            $this->getHummLogger()->log('humm_payment_cancel ' . $orderId);
+            $this->getMessageManager()->addWarningMessage(__("humm payment is unsuccessful. Please Check"));
+            $this->_redirect('checkout/cart', array('_secure' => false));
         }
     }
 
-    private function statusExists( $orderStatus ) {
+    /**
+     * @return array|void
+     */
+
+    public function ValidateCallback()
+    {
+        $params = $this->getRequest()->getParams();
+        $isValid = $this->getCryptoHelper()->isValidSignature($this->getRequest()->getParams(), $this->_encrypted->processValue($this->getGatewayConfig()->getApiKey()));
+        $result = $params['x_result'];
+        list($orderId, $hummProtectCode) = explode("-", $params['x_reference']);
+        $transactionId = $params['x_gateway_reference'];
+        $merchantNo = $params['x_account_id'];
+        $order = $this->getOrderById($orderId);
+        $mesg = array();
+        $errorMsg = array();
+        $redirectErrorURL = "humm/checkout/error";
+        $merchantNumber = $this->getGatewayConfig()->getMerchantNumber();
+        array_push($mesg, sprintf("CallBack Start: Order ProtectCode [Web:%s] [Humm:%s] | MerchantNo [web:%s] [Humm:%s]|[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
+        array_push($mesg, sprintf("Client IP: %s", $this->getClientIP()));
+
+        if ($result == "completed" && $order->getState() === Order::STATE_PROCESSING) {
+            $this->_redirect('checkout/onepage/success', array('_secure' => false));
+            $this->getHummLogger()->log(sprintf("Begin  [Order id%s ] State is %s leave now ..", $orderId, $order->getState()));
+        }
+
+        if (($merchantNo != $this->getGatewayConfig()->getMerchantNumber())) {
+            array_push($errorMsg, sprintf("ERROR: Order ProtectCode [Web:%s] [Humm:%s] | %s MerchantNo %s |[Response---%s] [method--%s]", $order->getProtectCode(), $hummProtectCode, $merchantNumber, $merchantNo, json_encode($this->getRequest()->getParams()), $this->getRequest()->getMethod()));
+        }
+
+        if (!$isValid) {
+            array_push($errorMsg, sprintf("Possible site forgery detected: invalid response signature transactionId:[%s]", $transactionId));
+
+        }
+
+        if (!$orderId) {
+            array_push($errorMsg, sprintf("Humm returned a null order id. This may indicate an issue with the humm payment gateway."));
+        }
+        if (!$order) {
+            array_push($errorMsg, sprintf("\"Humm returned an id for an order that could not be retrieved", $orderId));
+
+        }
+        array_walk($mesg, function ($eachMesg) {
+            $this->getHummLogger()->log($eachMesg, true);
+        });
+
+        if (count($errorMsg)) {
+            array_map(function ($eachError) {
+                $this->getHummLogger()->log($eachError);
+            }, $errorMsg);
+            $this->_redirect($redirectErrorURL);
+        }
+        if ($result == "failed" && $order->getState() == Order::STATE_CANCELED) {
+            $this->getMessageManager()->addErrorMessage(__("There was an error in the humm payment"));
+            $this->_redirect('checkout/cart', array('_secure' => false));
+        }
+        return array($order, $transactionId, $result, $orderId, $order->getState(), $errorMsg);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClientIP()
+    {
+        $objctManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $remote = $objctManager->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress');
+        return $remote->getRemoteAddress();
+    }
+
+    /**
+     * @param $orderStatus
+     * @return bool
+     */
+    private function statusExists($orderStatus)
+    {
         $statuses = $this->getObjectManager()
-                         ->get( 'Magento\Sales\Model\Order\Status' )
-                         ->getResourceCollection()
-                         ->getData();
-        foreach ( $statuses as $status ) {
-            if ( $orderStatus === $status["status"] ) {
+            ->get('Magento\Sales\Model\Order\Status')
+            ->getResourceCollection()
+            ->getData();
+        foreach ($statuses as $status) {
+            if ($orderStatus === $status["status"]) {
                 return true;
             }
         }
-
         return false;
     }
 
-    private function invoiceOrder( $order, $transactionId ) {
-        if ( ! $order->canInvoice() ) {
+    /**
+     * @param $order
+     * @param $transactionId
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function invoiceOrder($order, $transactionId)
+    {
+        if (!$order->canInvoice()) {
             throw new \Magento\Framework\Exception\LocalizedException(
-                __( 'Cannot create an invoice.' )
+                __('Cannot create an invoice.')
             );
         }
 
         $invoice = $this->getObjectManager()
-                        ->create( 'Magento\Sales\Model\Service\InvoiceService' )
-                        ->prepareInvoice( $order );
+            ->create('Magento\Sales\Model\Service\InvoiceService')
+            ->prepareInvoice($order);
 
-        if ( ! $invoice->getTotalQty() ) {
+        if (!$invoice->getTotalQty()) {
             throw new \Magento\Framework\Exception\LocalizedException(
-                __( 'You can\'t create an invoice without products.' )
+                __('You can\'t create an invoice without products.')
             );
         }
 
-        /*
-         * Look Magento/Sales/Model/Order/Invoice.register() for CAPTURE_OFFLINE explanation.
-         * Basically, if !config/can_capture and config/is_gateway and CAPTURE_OFFLINE and 
-         * Payment.IsTransactionPending => pay (Invoice.STATE = STATE_PAID...)
-         */
-        $invoice->setTransactionId( $transactionId );
-        $invoice->setRequestedCaptureCase( Order\Invoice::CAPTURE_OFFLINE );
+        $invoice->setTransactionId($transactionId);
+        $invoice->setRequestedCaptureCase(Order\Invoice::CAPTURE_OFFLINE);
         $invoice->register();
 
-        $transaction = $this->getObjectManager()->create( 'Magento\Framework\DB\Transaction' )
-                            ->addObject( $invoice )
-                            ->addObject( $invoice->getOrder() );
+        $transaction = $this->getObjectManager()->create('Magento\Framework\DB\Transaction')
+            ->addObject($invoice)
+            ->addObject($invoice->getOrder());
         $transaction->save();
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function createCsrfValidationException(
+        RequestInterface $request
+    ): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
+    }
 }

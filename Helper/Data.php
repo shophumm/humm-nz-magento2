@@ -13,6 +13,7 @@ use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Humm_Hummments_Helper_Data
+ * @author roger.bi@flexigroup.com.au
  *
  * Provides helper methods for retrieving data for the humm plugin
  */
@@ -82,6 +83,10 @@ class Data extends AbstractHelper {
             get_class()
         );
     }
+
+    /**
+     * @return Config
+     */
 
     protected function getGatewayConfig() {
         return $this->_gatewayConfig;

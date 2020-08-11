@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Humm_HummPaymentGateway::Menu" title="Humm Payment" module="Humm_HummPaymentGateway"
+             sortOrder="51" resource="Humm_HummPaymentGateway::Management"/>
+        <add id="Humm_HummPaymentGateway::Order" title="Humm Orders Status History" module="Humm_HummPaymentGateway" sortOrder="10" resource="Humm_HummPaymentGateway::Order"  action="humm/Order" parent="Humm_HummPaymentGateway::Menu"/>
+    </menu>
+</config>

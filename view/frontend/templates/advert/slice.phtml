@@ -1,0 +1,11 @@
+<?php $homePageUrl = '';
+$homePageUrl = $block->_getCustomUrl();
+$country = $block->_getCountry();
+?>
+<?php if ((empty($homePageUrl)) && ($country=='AU')) : ?>
+    <script src="https://widgets.shophumm.com.au/content/scripts/more-info-small-slices.js"></script>
+<?php elseif ((empty($homePageUrl)) && ($country=='NZ')) : ?>
+   <script src="https://widgets.shophumm.co.nz/content/scripts/more-info-small-slices.js"></script>
+<?php else: ?>
+    <?php echo $homePageUrl ?>
+<?php endif; ?>

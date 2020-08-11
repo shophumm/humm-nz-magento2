@@ -13,6 +13,11 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class InitializationRequest
+ * @package Humm\HummPaymentGateway\Gateway\Request
+ */
+
 class InitializationRequest implements BuilderInterface {
     private $_logger;
     private $_session;
@@ -41,29 +46,7 @@ class InitializationRequest implements BuilderInterface {
      * @return bool;
      */
     private function validateQuote( OrderAdapter $order ) {
-        if ( $this->_gatewayConfig->getTitle() == 'Oxipay' ) {
-            $total = $order->getGrandTotalAmount();
-            if ( $total < 20 ) {
-                $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases less than $20." ) );
-
-                return false;
-            }
-
-            if ( $this->_gatewayConfig->getSpecificCountry() == 'AU' ) {
-                if ( $total > 2100 ) {
-                    $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases over $2100." ) );
-
-                    return false;
-                }
-            } else {
-                if ( $total > 1500 ) {
-                    $this->_session->setHummErrorMessage( __( "Oxipay doesn't support purchases over $1500." ) );
-
-                    return false;
-                }
-            }
-        }
-
+        
         $allowedCountry = $this->_gatewayConfig->getSpecificCountry();
 
         if ( $order->getBillingAddress()->getCountryId() != $allowedCountry ) {

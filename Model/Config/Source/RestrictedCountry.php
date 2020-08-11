@@ -8,6 +8,11 @@ namespace Humm\HummPaymentGateway\Model\Config\Source;
 
 use Magento\Directory\Model\Config\Source\Country;
 
+/**
+ * @author roger.bi@flexigroup.com.au
+ * Class RestrictedCountry
+ * @package Humm\HummPaymentGateway\Model\Config\Source
+ */
 class RestrictedCountry extends Country {
     /**
      * @param \Magento\Directory\Model\ResourceModel\Country\Collection $countryCollection
