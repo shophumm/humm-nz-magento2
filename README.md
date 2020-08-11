@@ -1,4 +1,4 @@
-# Humm Payment Gateway Module for Magento 2
+# Humm Payment Gateway Module for Magento 2 new Plugin Version
 
 The following instructions detail how to install the **humm** payment gateway on the Magento 2 platform.
 
@@ -128,5 +128,4 @@ Software Design Patterns Addition
 
 
      4. Dependency Injections for better M2 development 
-
 
