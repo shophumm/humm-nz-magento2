@@ -22,9 +22,9 @@ use Magento\Framework\View\Asset\Repository;
 final class ConfigProvider implements ConfigProviderInterface
 {
 
-    const LAUNCH_TIME_URL = 'https://humm-variables.s3-ap-southeast-2.amazonaws.com/nz-launch-time.txt';
-    const LAUNCH_TIME_DEFAULT = "2030-05-11 00:00:00 UTC";
-    const LAUNCH_TIME_CHECK_ENDS = "2030-11-18 00:00:00 UTC";
+    const LAUNCH_TIME_URL = 'https://humm-nz-switch.s3-ap-southeast-2.amazonaws.com/switch-time.txt';
+    const LAUNCH_TIME_DEFAULT = "2020-09-14 10:00:00 AEST";
+    const LAUNCH_TIME_CHECK_ENDS = "2020-09-21 10:00:00 AEST";
 
     protected $_gatewayConfig;
     protected $_scopeConfigInterface;
@@ -110,7 +110,7 @@ final class ConfigProvider implements ConfigProviderInterface
         }
         $launch_time = $this->_gatewayConfig->getLaunchTime();
         $launch_time_update_time = $this->_gatewayConfig->getLaunchTimeUpdated();
-        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 60)) {
+        if (empty($launch_time) || empty($launch_time_update_time) || (time() - $launch_time_update_time >= 1440)) {
             $remote_launch_time_string = '';
             try {
                 $remote_launch_time_string = file_get_contents(self::LAUNCH_TIME_URL);
@@ -118,7 +118,7 @@ final class ConfigProvider implements ConfigProviderInterface
             }
             if (!empty($remote_launch_time_string)) {
                 $launch_time = strtotime($remote_launch_time_string);
-                if ($remote_launch_time_string >= self::LAUNCH_TIME_DEFAULT) {
+                if (strtotime($remote_launch_time_string) >= strtotime(self::LAUNCH_TIME_DEFAULT)) {
                     $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time', $launch_time, 'default', 0);
                 }
                 $this->_resourceConfig->saveConfig('payment/humm_gateway/humm_conf/launch_time_updated', time(), 'default', 0);
