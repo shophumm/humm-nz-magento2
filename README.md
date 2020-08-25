@@ -4,9 +4,9 @@ The following instructions demonstrate how to install the **humm** payment gatew
 
 This assumes that you have signed the required Merchant Agreement and have been provided a Merchant ID and API Key.
 
-# Magento2 Specification.pdf in the current folder 
+Magento2 plugin specification 
 
-[download](https://github.com/shophumm/humm-nz-magento2.git/blob/master/Magento2%20Specification.pdf).
+[download](https://github.com/shophumm/humm-nz-magento2/blob/master/Magento2%20plugin.pdf).
 
 # Getting help. 
 
@@ -88,7 +88,7 @@ Navigate to **stores** → **Configuration** → **Sales** → **Payment Methods
 
 Reference Online Doc
 
-# https://docs.shophumm.co.nz/ecommerce/magento_2/ Configuration sections
+ https://docs.shophumm.co.nz/ecommerce/magento_2/ Configuration sections
 
 
 ## Varnish Cache
