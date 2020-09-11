@@ -12,7 +12,7 @@ Magento2 plugin specification
 
 If you would like assistance with the installation of the plugin or you need an API key, please contact the **humm** Platform Integration Team pit@shophumm.com.au
 
-https://docs.shophumm.co.nz/ecommerce/magento_2/  online configuration sections
+https://docs.shophumm.co.nz/ecommerce/magento_2_nz/  online configuration sections
 
 
 
