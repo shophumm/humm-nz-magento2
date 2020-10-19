@@ -9,17 +9,12 @@
 <?php endif; ?>
 
 <?php if ($country == 'NZ'): ?>
-    <?php if (!$littleBig) {
+   <?php if (floatval($productPrice) < 1000) {
         $ec_pattern = sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&LittleThings&little=F5', '"></script>');
-        $ec_pattern = $ec_pattern . sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&LittleThings&little=w10', '"></script>');
     } else {
-        $ec_pattern = sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&big=M6', '"></script>');
-        $ec_pattern = $ec_pattern . sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&big=M9', '"></script>');
-        $ec_pattern = $ec_pattern . sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&big=M12', '"></script>');
-        $ec_pattern = $ec_pattern . sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&big=M18', '"></script>');
-        $ec_pattern = $ec_pattern . sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, '&big=M24', '"></script>');
+        $ec_pattern = sprintf("%s%s%s%s", '<script src= "https://widgets.shophumm.co.nz/content/scripts/price-info.js?productPrice=', $productPrice, 'BigThings', '"></script>');
     }
-      echo $ec_pattern;
+    echo $ec_pattern;
 endif; ?>
 
 
